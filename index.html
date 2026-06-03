@@ -9,7 +9,22 @@
 <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-<body>
+
+<!-- FLOATING BG EMOJIS -->
+<div class="bg-emojis" id="bg-emojis">
+  <span class="bg-emoji">🐬</span>
+  <span class="bg-emoji">🐢</span>
+  <span class="bg-emoji">🪸</span>
+  <span class="bg-emoji">🐠</span>
+  <span class="bg-emoji">🦭</span>
+  <span class="bg-emoji">🌊</span>
+  <span class="bg-emoji">🐟</span>
+  <span class="bg-emoji">⭐</span>
+  <span class="bg-emoji">🐬</span>
+  <span class="bg-emoji">🪸</span>
+  <span class="bg-emoji">🐙</span>
+  <span class="bg-emoji">🐡</span>
+</div>
 
 <!-- NAV -->
 <nav id="nav">
@@ -393,5 +408,24 @@
 
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
+<script>
+// ── BG EMOJIS PER DESTINATION ──
+const destEmojis={
+  marsa:['🐬','🐢','🪸','🐠','🦭','🌊','🐟','⭐','🐬','🪸','🐙','🐡'],
+  luxor:['🏛️','🎈','⛵','🗿','🌅','🏺','🌙','✨','🏛️','🎈','🦅','⭐'],
+  aswan:['🚢','🗿','🏘️','🌴','⛵','🌊','🏺','✨','🚢','🌅','🦅','🌙'],
+};
+function updateBgEmojis(dest){
+  const emojis=destEmojis[dest]||destEmojis.marsa;
+  const spans=document.querySelectorAll('.bg-emoji');
+  spans.forEach((s,i)=>{ s.textContent=emojis[i%emojis.length]; });
+}
+// Hook into switchDestHero
+const _origSwitch=switchDestHero;
+window.switchDestHero=function(dest,el){
+  _origSwitch(dest,el);
+  updateBgEmojis(dest);
+};
+</script>
 </body>
 </html>
