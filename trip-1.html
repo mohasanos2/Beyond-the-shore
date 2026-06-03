@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Trip Details — Beyond The Shore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+  .trip-page{min-height:100vh;padding-top:80px;background:var(--white)}
+  /* BG EMOJIS */
+  .bg-emojis{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .bg-emoji{
+    position:absolute;font-size:2.8rem;opacity:0;
+    animation:floatUp 18s ease-in-out infinite;
+    filter:blur(0.5px);user-select:none;
+  }
+  @keyframes floatUp{
+    0%{transform:translateY(0) rotate(0deg) scale(1);opacity:0}
+    8%{opacity:0.07}
+    50%{transform:translateY(-38vh) rotate(12deg) scale(1.08);opacity:0.09}
+    92%{opacity:0.07}
+    100%{transform:translateY(-78vh) rotate(-8deg) scale(0.95);opacity:0}
+  }
+  .bg-emoji:nth-child(1){left:5%;top:80%;animation-delay:0s;font-size:3.2rem}
+  .bg-emoji:nth-child(2){left:15%;top:90%;animation-delay:2.5s;font-size:2.2rem}
+  .bg-emoji:nth-child(3){left:28%;top:75%;animation-delay:5s;font-size:3.5rem}
+  .bg-emoji:nth-child(4){left:42%;top:85%;animation-delay:1.5s;font-size:2rem}
+  .bg-emoji:nth-child(5){left:57%;top:92%;animation-delay:7s;font-size:3rem}
+  .bg-emoji:nth-child(6){left:70%;top:78%;animation-delay:3.5s;font-size:2.5rem}
+  .bg-emoji:nth-child(7){left:82%;top:88%;animation-delay:9s;font-size:2rem}
+  .bg-emoji:nth-child(8){left:92%;top:82%;animation-delay:4.5s;font-size:3rem}
+  .bg-emoji:nth-child(9){left:22%;top:95%;animation-delay:11s;font-size:2.3rem}
+  .bg-emoji:nth-child(10){left:65%;top:95%;animation-delay:6.5s;font-size:2.8rem}
+  .bg-emoji:nth-child(11){left:48%;top:70%;animation-delay:13s;font-size:2.1rem}
+  .bg-emoji:nth-child(12){left:8%;top:65%;animation-delay:8s;font-size:2.6rem}
+  .trip-hero{
+    min-height:340px;display:flex;align-items:flex-end;
+    padding:2.5rem 2rem 2rem;position:relative;overflow:hidden;
+  }
+  .trip-hero-emoji{
+    position:absolute;inset:0;display:flex;align-items:center;
+    justify-content:center;font-size:8rem;opacity:0.18;pointer-events:none;
+    filter:blur(2px);
+  }
+  .trip-hero-content{position:relative;z-index:2;max-width:700px}
+  .trip-badge{
+    display:inline-block;font-size:0.72rem;font-weight:600;
+    background:rgba(255,255,255,0.25);backdrop-filter:blur(8px);
+    border-radius:50px;padding:0.3rem 0.8rem;color:var(--ink);margin-bottom:0.8rem;
+  }
+  .trip-hero-name{
+    font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:600;
+    color:var(--ink);line-height:1.1;margin-bottom:0.5rem;
+  }
+  .trip-hero-loc{font-size:0.9rem;color:var(--ink-mid);display:flex;align-items:center;gap:0.3rem}
+  .trip-body{max-width:780px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+  .trip-meta-row{
+    display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+    padding:1.2rem 0;border-bottom:1px solid var(--border);margin-bottom:1.8rem;
+  }
+  .trip-stars{color:var(--sun);font-size:0.9rem}
+  .trip-price-big{
+    font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;
+    color:var(--teal);
+  }
+  .trip-price-old{font-size:0.95rem;color:var(--ink-light);text-decoration:line-through}
+  .trip-price-pp{font-size:0.8rem;color:var(--ink-light)}
+  .trip-tags{display:flex;flex-wrap:wrap;gap:0.4rem;margin-left:auto}
+  .trip-tag{
+    font-size:0.72rem;font-weight:500;
+    background:var(--teal-pale);color:var(--teal);
+    padding:0.25rem 0.7rem;border-radius:50px;
+  }
+  .trip-desc{
+    font-size:1.05rem;line-height:1.75;color:var(--ink-mid);
+    margin-bottom:2rem;
+  }
+  .section-label{
+    font-size:0.62rem;font-weight:700;letter-spacing:0.14em;
+    text-transform:uppercase;color:var(--ink-light);margin-bottom:0.9rem;
+  }
+  .details-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:0.7rem;margin-bottom:2rem;
+  }
+  .detail-cell{
+    background:var(--sand);border-radius:12px;padding:0.9rem 1rem;
+  }
+  .detail-label{font-size:0.6rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-light)}
+  .detail-value{font-size:0.9rem;font-weight:500;color:var(--ink);margin-top:0.2rem}
+  .includes-list{
+    list-style:none;display:flex;flex-wrap:wrap;gap:0.45rem;margin-bottom:2rem;
+  }
+  .includes-list li{
+    font-size:0.78rem;font-weight:500;
+    background:var(--teal-pale);color:var(--teal);
+    padding:0.3rem 0.85rem;border-radius:50px;
+  }
+  .extra-note{
+    font-size:0.82rem;color:var(--ink-mid);
+    background:var(--sun-pale);border-left:3px solid var(--sun);
+    padding:0.8rem 1rem;border-radius:0 10px 10px 0;margin-bottom:2.5rem;
+    line-height:1.6;
+  }
+  .cta-block{
+    display:flex;gap:0.8rem;flex-wrap:wrap;
+    position:sticky;bottom:1.5rem;
+  }
+  .cta-wa{
+    flex:1;min-width:160px;padding:1rem;text-align:center;
+    font-size:0.88rem;font-weight:600;text-decoration:none;
+    border-radius:50px;background:#25D366;color:white;
+    transition:transform 0.2s,box-shadow 0.2s;border:none;cursor:pointer;
+  }
+  .cta-wa:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,0.35)}
+  .cta-book{
+    flex:1;min-width:160px;padding:1rem;text-align:center;
+    font-size:0.88rem;font-weight:600;text-decoration:none;
+    border-radius:50px;background:var(--ink);color:white;
+    transition:transform 0.2s,box-shadow 0.2s;border:none;cursor:pointer;
+  }
+  .cta-book:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(18,36,46,0.25)}
+  .back-btn{
+    display:inline-flex;align-items:center;gap:0.4rem;
+    font-size:0.82rem;font-weight:500;color:var(--ink-mid);
+    text-decoration:none;cursor:pointer;margin-bottom:1.5rem;
+    transition:color 0.2s;
+  }
+  .back-btn:hover{color:var(--teal)}
+  .not-found{text-align:center;padding:6rem 2rem;color:var(--ink-mid)}
+  .not-found h2{font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:0.5rem}
+  @media(max-width:500px){
+    .trip-hero-name{font-size:2rem}
+    .details-grid{grid-template-columns:1fr}
+    .cta-block{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+
+<!-- FLOATING BG EMOJIS -->
+<div class="bg-emojis" id="bg-emojis">
+  <span class="bg-emoji"></span>
+  <span class="bg-emoji"></span>
+  <span class="bg-emoji"></span>
+  <span class="bg-emoji"></span>
+  <span class="bg-emoji"></span>
+  <span class="bg-emoji"></span>
+  <span class="bg-emoji"></span>
+  <span class="bg-emoji"></span>
+  <span class="bg-emoji"></span>
+  <span class="bg-emoji"></span>
+  <span class="bg-emoji"></span>
+  <span class="bg-emoji"></span>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo" onclick="window.location.href='index.html'"><img src="images/image_1.png" alt="Beyond The Shore" class="logo-img"/></div>
+  <ul class="nav-links">
+    <li><a href="index.html#trips">Trips</a></li>
+    <li><a href="index.html#why">About</a></li>
+    <li><a href="index.html#reviews">Reviews</a></li>
+    <li><a href="index.html">Book</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="lang-btn">🌐 EN</button>
+    <button class="nav-cta" onclick="window.location.href='index.html'">Book Now</button>
+  </div>
+</nav>
+
+<div class="trip-page" id="trip-page">
+  <div id="trip-content"></div>
+</div>
+
+<script src="js/data.js"></script>
+<script>
+// ── FIND TRIP ──
+function findTrip(id){
+  for(const dest of Object.values(allTrips)){
+    const t=dest.find(x=>x.id===id);
+    if(t)return t;
+  }
+  return null;
+}
+
+// ── RENDER ──
+const params=new URLSearchParams(window.location.search);
+const id=params.get('id');
+const t=id?findTrip(id):null;
+const container=document.getElementById('trip-content');
+
+if(!t){
+  container.innerHTML=`
+    <div class="not-found">
+      <h2>Trip not found</h2>
+      <p>This trip doesn't exist or may have moved.</p>
+      <br/>
+      <a href="index.html" style="color:var(--teal);font-weight:600">← Back to all trips</a>
+    </div>`;
+} else {
+  document.title=`${t.name} — Beyond The Shore`;
+
+  const waMsg=encodeURIComponent(`Hi! I'm interested in booking: ${t.name} (${t.price}). Can you help me?`);
+
+  container.innerHTML=`
+    <div class="trip-hero" style="background:${t.bgGrad}">
+      <div class="trip-hero-emoji">${t.icon}</div>
+      <div class="trip-hero-content">
+        <div class="trip-badge">${t.badge}</div>
+        <div class="trip-hero-name">${t.name}</div>
+        <div class="trip-hero-loc">📍 ${t.loc}</div>
+      </div>
+    </div>
+
+    <div class="trip-body">
+      <a class="back-btn" href="index.html">← Back to all trips</a>
+
+      <div class="trip-meta-row">
+        <div>
+          <div class="trip-stars">★★★★★ <span style="color:var(--ink-mid);font-size:0.82rem">5.0</span></div>
+        </div>
+        <div>
+          ${t.oldP?`<span class="trip-price-old">${t.oldP}</span> `:''}
+          <span class="trip-price-big">${t.price}</span>
+          <span class="trip-price-pp"> / person</span>
+        </div>
+        <div class="trip-tags">
+          ${t.tagLabels.map(x=>`<span class="trip-tag">${x}</span>`).join('')}
+        </div>
+      </div>
+
+      <p class="trip-desc">${t.desc}</p>
+
+      <div class="section-label">Trip Details</div>
+      <div class="details-grid">
+        ${t.details.map(d=>`
+          <div class="detail-cell">
+            <div class="detail-label">${d.l}</div>
+            <div class="detail-value">${d.v}</div>
+          </div>`).join('')}
+      </div>
+
+      <div class="section-label">What's Included</div>
+      <ul class="includes-list">
+        ${t.includes.map(i=>`<li>✓ ${i}</li>`).join('')}
+      </ul>
+
+      ${t.extra?`<div class="extra-note">${t.extra}</div>`:''}
+
+      <div class="cta-block">
+        <a class="cta-wa" href="https://wa.me/201037420949?text=${waMsg}">
+          💬 Book via WhatsApp
+        </a>
+        <a class="cta-book" href="index.html">
+          📋 Full Booking Form
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+// ── BG EMOJIS ──
+const tripEmojis={
+  sataya:['🐬','🌊','🐟','🐠','🪸','⭐','🐬','🌊','🐡','🪸','🐬','💙'],
+  hamata:['🏝️','🌊','🐢','🪸','🐠','🌴','🏝️','⭐','🐟','🌊','🦀','🌿'],
+  coral:['🪸','🐠','🤿','🐟','🌊','🐡','🪸','⭐','🐬','🦈','🐙','💎'],
+  abu:['🐢','🦭','🌊','🏖️','🐠','🪸','🐢','⭐','🌿','🐡','🌊','💚'],
+  mubarak:['🦭','🐢','🌊','🐠','🪸','⭐','🦭','💙','🐟','🌿','🦭','🌊'],
+  luli:['🏖️','🌊','🐢','🪸','🐠','🌴','⭐','🏖️','🐟','🦜','🌊','💛'],
+  temples:['🏛️','🗿','🌅','⭐','🏺','🌙','🏛️','✨','🦅','🗿','🌅','🏺'],
+  balloon:['🎈','🌅','🏛️','⭐','✨','🌙','🎈','🌅','🏺','🌤️','🎈','🌟'],
+  felucca:['⛵','🌅','🌊','🌙','⭐','🏛️','⛵','💛','🌿','🌅','⛵','✨'],
+  'luxor-market':['🕌','🌙','🏛️','⭐','🌅','✨','🕌','🎨','🌿','🏺','🌙','🪔'],
+  abusimbel:['🗿','🏺','🌅','⭐','🏛️','✨','🗿','🌙','🦅','🌅','🏺','💛'],
+  nilecruise:['🚢','🌊','🏛️','🗿','⭐','🌅','🚢','✨','🏺','🌙','🚢','💙'],
+  nubian:['🏘️','🌴','⛵','🌊','⭐','🎨','🏘️','🌅','🌿','🎭','🏘️','💛'],
+};
+const tripKey=id||'sataya';
+const emojiSet=tripEmojis[tripKey]||['🌊','⭐','🌿','🐠','🪸','✨','🌅','💙','🐟','🌊','⭐','🌿'];
+document.querySelectorAll('.bg-emoji').forEach((s,i)=>{ s.textContent=emojiSet[i%emojiSet.length]; });
+
+// Nav scroll effect
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',scrollY>40);
+});
+</script>
+</body>
+</html>
