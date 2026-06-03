@@ -54,7 +54,7 @@ function renderTrips(filter='all'){
   const grid=document.getElementById('trips-grid');
   const list=filter==='all'?trips:trips.filter(t=>t.tags.includes(filter));
   grid.innerHTML=list.map(t=>`
-  <div class="tcard" onclick="openModal('${t.id}')">
+  <div class="tcard" onclick="window.location.href='trip.html?id=${t.id}'">
     <div class="tcard-img ${t.bg}">
       ${t.disc?`<div class="disc-badge">${t.disc}</div>`:''}
       <div class="pop-badge">${t.badge}</div>
@@ -94,7 +94,7 @@ function handleSearch(){
   );
   const grid=document.getElementById('trips-grid');
   grid.innerHTML=filtered.length?filtered.map(t=>`
-  <div class="tcard" onclick="openModal('${t.id}')">
+  <div class="tcard" onclick="window.location.href='trip.html?id=${t.id}'">
     <div class="tcard-img ${t.bg}"><div class="pop-badge">${t.badge}</div><span>${t.icon}</span></div>
     <div class="tcard-body">
       <div class="tcard-meta"><div class="tcard-loc">📍 ${t.loc}</div><div class="tcard-stars"><span class="stars">★★★★★</span> 5.0</div></div>
