@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beyond The Shore — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0d0f14;--surface:#161920;--surface2:#1e2230;--border:#2a2f3f;
+    --teal:#2BBFCF;--coral:#E05C3A;--sun:#F4A535;--green:#3DB85C;
+    --text:#e8eaf0;--muted:#7a8099;--white:#fff;
+  }
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex}
+
+  /* ── SIDEBAR ── */
+  .sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:10}
+  .sidebar-logo{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
+  .sidebar-logo .brand{font-family:'Playfair Display',serif;font-size:15px;color:var(--teal);letter-spacing:.5px}
+  .sidebar-logo .sub{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px}
+  .nav-section{padding:16px 12px 8px;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;margin:2px 8px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);transition:.15s}
+  .nav-item:hover{background:var(--surface2);color:var(--text)}
+  .nav-item.active{background:rgba(43,191,207,.12);color:var(--teal)}
+  .nav-item .icon{font-size:16px;width:20px;text-align:center}
+  .sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
+
+  /* ── MAIN ── */
+  .main{margin-left:220px;flex:1;padding:32px;min-height:100vh}
+  .page{display:none}.page.active{display:block}
+
+  /* ── TOP BAR ── */
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px}
+  .topbar h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:700}
+  .topbar .actions{display:flex;gap:10px}
+
+  /* ── STATS ── */
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden}
+  .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+  .stat-card.teal::before{background:var(--teal)}
+  .stat-card.coral::before{background:var(--coral)}
+  .stat-card.sun::before{background:var(--sun)}
+  .stat-card.green::before{background:var(--green)}
+  .stat-label{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+  .stat-val{font-size:28px;font-weight:700;font-family:'Playfair Display',serif}
+  .stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
+
+  /* ── BUTTONS ── */
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s;font-family:'DM Sans',sans-serif}
+  .btn-primary{background:var(--teal);color:#000}
+  .btn-primary:hover{background:#25aab8}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+  .btn-ghost:hover{background:var(--surface2);color:var(--text)}
+  .btn-danger{background:transparent;color:var(--coral);border:1px solid rgba(224,92,58,.3)}
+  .btn-danger:hover{background:rgba(224,92,58,.1)}
+  .btn-sm{padding:6px 12px;font-size:12px}
+  .btn-export{background:rgba(244,165,53,.12);color:var(--sun);border:1px solid rgba(244,165,53,.25)}
+  .btn-export:hover{background:rgba(244,165,53,.2)}
+
+  /* ── TABLE ── */
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .table-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+  .table-header h3{font-size:14px;font-weight:600}
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;padding:10px 16px;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)}
+  td{padding:12px 16px;font-size:13px;border-bottom:1px solid rgba(42,47,63,.5);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  .trip-icon-cell{width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:18px}
+  .badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;font-family:'DM Mono',monospace}
+  .badge-marsa{background:rgba(43,191,207,.12);color:var(--teal)}
+  .badge-luxor{background:rgba(244,165,53,.12);color:var(--sun)}
+  .badge-aswan{background:rgba(61,184,92,.12);color:var(--green)}
+
+  /* ── MODAL ── */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:640px;max-height:88vh;overflow-y:auto;padding:28px}
+  .modal h2{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:20px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .form-grid .full{grid-column:1/-1}
+  .form-group{display:flex;flex-direction:column;gap:6px}
+  label{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.5px;text-transform:uppercase}
+  input,select,textarea{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:.15s}
+  input:focus,select:focus,textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(43,191,207,.1)}
+  textarea{resize:vertical;min-height:80px}
+  select option{background:var(--surface2)}
+  .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+
+  /* ── DETAILS EDITOR ── */
+  .details-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+  .includes-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px}
+  .add-row-btn{background:rgba(43,191,207,.08);border:1px dashed rgba(43,191,207,.3);color:var(--teal);padding:7px;border-radius:8px;cursor:pointer;font-size:12px;width:100%;font-family:'DM Sans',sans-serif;transition:.15s}
+  .add-row-btn:hover{background:rgba(43,191,207,.15)}
+  .del-btn{background:transparent;border:1px solid rgba(224,92,58,.3);color:var(--coral);border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px}
+
+  /* ── EXPORT ── */
+  .export-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:20px}
+  .export-box pre{font-family:'DM Mono',monospace;font-size:11px;color:var(--teal);max-height:400px;overflow:auto;white-space:pre-wrap;line-height:1.6}
+
+  /* ── BOOKINGS ── */
+  .booking-status{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600}
+  .status-new{background:rgba(43,191,207,.12);color:var(--teal)}
+  .status-confirmed{background:rgba(61,184,92,.12);color:var(--green)}
+  .status-pending{background:rgba(244,165,53,.12);color:var(--sun)}
+  .empty-state{padding:48px;text-align:center;color:var(--muted);font-size:13px}
+  .empty-state .emoji{font-size:32px;margin-bottom:8px}
+  .dest-tabs{display:flex;gap:8px;margin-bottom:20px}
+  .dest-tab{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:.15s;font-family:'DM Sans',sans-serif}
+  .dest-tab.active{background:var(--teal);color:#000;border-color:var(--teal)}
+  .img-preview{width:100%;height:120px;border-radius:8px;object-fit:cover;margin-top:6px;border:1px solid var(--border);display:none}
+  .img-preview.visible{display:block}
+  .gallery-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px;align-items:center}
+  .gallery-thumb{width:36px;height:36px;border-radius:6px;object-fit:cover;border:1px solid var(--border);display:none}
+  .gallery-thumb.visible{display:inline-block}
+  .table-img{width:36px;height:36px;border-radius:8px;object-fit:cover}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">Beyond The Shore</div>
+    <div class="sub">Admin Panel v1.0</div>
+  </div>
+  <div class="nav-section">Main</div>
+  <div class="nav-item active" onclick="nav('dashboard',this)"><span class="icon">📊</span> Dashboard</div>
+  <div class="nav-item" onclick="nav('trips',this)"><span class="icon">🗺️</span> Trips CMS</div>
+  <div class="nav-item" onclick="nav('bookings',this)"><span class="icon">📋</span> Bookings</div>
+  <div class="nav-section">Tools</div>
+  <div class="nav-item" onclick="nav('export',this)"><span class="icon">📦</span> Export Data</div>
+  <div class="sidebar-footer">beyondtheshore.com</div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="topbar">
+      <h1>Dashboard</h1>
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="nav('trips',document.querySelector('[onclick*=trips]'))">+ Add Trip</button>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card teal"><div class="stat-label">Total Trips</div><div class="stat-val" id="stat-trips">0</div><div class="stat-sub">across 3 destinations</div></div>
+      <div class="stat-card coral"><div class="stat-label">Bookings</div><div class="stat-val" id="stat-bookings">0</div><div class="stat-sub">simulated requests</div></div>
+      <div class="stat-card sun"><div class="stat-label">Destinations</div><div class="stat-val">3</div><div class="stat-sub">Marsa · Luxor · Aswan</div></div>
+      <div class="stat-card green"><div class="stat-label">Avg Price</div><div class="stat-val" id="stat-price">$0</div><div class="stat-sub">per person</div></div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-header"><h3>All Trips Overview</h3><button class="btn btn-ghost btn-sm" onclick="nav('trips',document.querySelector('[onclick*=trips]'))">Manage →</button></div>
+      <table><thead><tr><th>Trip</th><th>Destination</th><th>Price</th><th>Tags</th><th>Actions</th></tr></thead>
+      <tbody id="dash-table"></tbody></table>
+    </div>
+  </div>
+
+  <!-- TRIPS CMS -->
+  <div class="page" id="page-trips">
+    <div class="topbar">
+      <h1>Trips CMS</h1>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="openAddModal()">+ New Trip</button>
+      </div>
+    </div>
+    <div class="dest-tabs">
+      <button class="dest-tab active" onclick="filterDest('all',this)">All</button>
+      <button class="dest-tab" onclick="filterDest('marsa',this)">🤿 Marsa Alam</button>
+      <button class="dest-tab" onclick="filterDest('luxor',this)">🏛️ Luxor</button>
+      <button class="dest-tab" onclick="filterDest('aswan',this)">⛵ Aswan</button>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th></th><th>Name</th><th>Dest</th><th>Price</th><th>Badge</th><th>Tags</th><th>Actions</th></tr></thead>
+      <tbody id="trips-table"></tbody></table>
+    </div>
+  </div>
+
+  <!-- BOOKINGS -->
+  <div class="page" id="page-bookings">
+    <div class="topbar"><h1>Bookings</h1></div>
+    <div class="table-wrap">
+      <div class="table-header"><h3>Booking Requests</h3><span style="font-size:12px;color:var(--muted)">Simulated data — connect your backend to populate</span></div>
+      <table><thead><tr><th>Name</th><th>Trip</th><th>Date</th><th>Guests</th><th>Contact</th><th>Status</th></tr></thead>
+      <tbody id="bookings-table"></tbody></table>
+    </div>
+  </div>
+
+  <!-- EXPORT -->
+  <div class="page" id="page-export">
+    <div class="topbar"><h1>Export Data</h1><div class="actions"><button class="btn btn-export" onclick="copyExport()">📋 Copy JS</button></div></div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:20px">Copy the generated <code style="color:var(--teal);font-family:'DM Mono',monospace">allTrips</code> object and paste it into your <strong>data.js</strong> file to update the live site.</p>
+    <div class="export-box"><pre id="export-code"></pre></div>
+  </div>
+
+</main>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-overlay" id="trip-modal">
+  <div class="modal">
+    <h2 id="modal-title">New Trip</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>Trip Name</label><input id="f-name" placeholder="e.g. Dolphin Watch Safari"/></div>
+      <div class="form-group"><label>Destination</label>
+        <select id="f-dest"><option value="marsa">Marsa Alam</option><option value="luxor">Luxor</option><option value="aswan">Aswan</option></select>
+      </div>
+      <div class="form-group"><label>Price (display)</label><input id="f-price" placeholder="From $45"/></div>
+      <div class="form-group"><label>Price (number, for total)</label><input id="f-priceNum" type="number" placeholder="45"/></div>
+      <div class="form-group"><label>Old Price (optional)</label><input id="f-oldP" placeholder="$60"/></div>
+      <div class="form-group"><label>Discount Badge (optional)</label><input id="f-disc" placeholder="25% OFF"/></div>
+      <div class="form-group"><label>Icon Emoji</label><input id="f-icon" placeholder="🐬"/></div>
+      <div class="form-group"><label>Color Class</label>
+        <select id="f-bg"><option value="c-teal">Teal</option><option value="c-sun">Sun</option><option value="c-green">Green</option><option value="c-coral">Coral</option><option value="c-blue">Blue</option></select>
+      </div>
+      <div class="form-group"><label>Location</label><input id="f-loc" placeholder="Marsa Alam, Red Sea"/></div>
+      <div class="form-group"><label>Pop Badge</label><input id="f-badge" placeholder="⭐ Best Seller"/></div>
+      <div class="form-group full"><label>Short Description</label><input id="f-desc" placeholder="A short description shown on the card"/></div>
+      <div class="form-group full"><label>Tags (comma separated)</label><input id="f-tags" placeholder="snorkeling,dolphins,wildlife"/></div>
+      <div class="form-group full"><label>Tag Labels (comma separated)</label><input id="f-tagLabels" placeholder="🤿 Snorkeling, 🐬 Dolphins, 🦭 Wildlife"/></div>
+      <div class="form-group full"><label>Extra Note (bottom of modal)</label><textarea id="f-extra" placeholder="Free hotel pickup included..."></textarea></div>
+      <div class="form-group full">
+        <label>Main Image URL</label>
+        <input id="f-mainImage" placeholder="https://..." oninput="previewMainImage(this.value)"/>
+        <img id="main-img-preview" class="img-preview" alt="preview"/>
+      </div>
+    </div>
+
+    <div style="margin-top:20px">
+      <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">Gallery Images</div>
+      <div id="gallery-rows"></div>
+      <button class="add-row-btn" onclick="addGalleryRow()">+ Add Gallery Image</button>
+    </div>
+
+    <div style="margin-top:20px">
+      <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">Trip Details Grid</div>
+      <div id="details-rows"></div>
+      <button class="add-row-btn" onclick="addDetailRow()">+ Add Detail Row</button>
+    </div>
+
+    <div style="margin-top:20px">
+      <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">Includes List</div>
+      <div id="includes-rows"></div>
+      <button class="add-row-btn" onclick="addIncludeRow()">+ Add Include Item</button>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTrip()">Save Trip</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── SAMPLE DATA (mirrors typical data.js structure) ──
+let allTrips = {
+  marsa: [
+    {id:'marsa-1',name:'Dolphin Watch Safari',dest:'marsa',price:'From $45',priceNum:45,oldP:'$60',disc:'25% OFF',icon:'🐬',bg:'c-teal',loc:'Marsa Alam, Red Sea',badge:'⭐ Best Seller',desc:'Swim with wild spinner dolphins in their natural habitat.',tags:['snorkeling','dolphins','wildlife'],tagLabels:['🤿 Snorkeling','🐬 Dolphins','🦭 Wildlife'],details:[{l:'Duration',v:'6 Hours'},{l:'Pickup',v:'7:00 AM'},{l:'Group Size',v:'Max 12'},{l:'Level',v:'All Levels'}],includes:['Hotel pickup & drop-off','Snorkeling gear','Light lunch & water'],extra:'Free hotel pickup from Marsa Alam area.'},
+    {id:'marsa-2',name:'Turtle Island Snorkeling',dest:'marsa',price:'From $55',priceNum:55,icon:'🐢',bg:'c-green',loc:'Hamata Islands',badge:'🌊 Popular',desc:'Snorkel among sea turtles at the pristine Hamata Archipelago.',tags:['snorkeling','islands','wildlife'],tagLabels:['🤿 Snorkeling','🏝️ Islands','🦭 Wildlife'],details:[{l:'Duration',v:'8 Hours'},{l:'Pickup',v:'6:30 AM'},{l:'Group Size',v:'Max 10'},{l:'Level',v:'Beginner'}],includes:['Boat trip','Snorkeling equipment','Lunch box'],extra:'Bring sunscreen and a towel.'},
+  ],
+  luxor: [
+    {id:'luxor-1',name:'Valley of the Kings Day Tour',dest:'luxor',price:'From $65',priceNum:65,icon:'🏺',bg:'c-sun',loc:'Luxor, West Bank',badge:'🔥 Top Rated',desc:'Explore the royal tombs of ancient pharaohs on the West Bank.',tags:['culture','temples'],tagLabels:['🏛️ Culture','🗿 Temples'],details:[{l:'Duration',v:'7 Hours'},{l:'Pickup',v:'8:00 AM'},{l:'Group Size',v:'Max 15'},{l:'Guide',v:'Licensed Egyptologist'}],includes:['A/C transport','Entry tickets','Expert guide'],extra:'Comfortable shoes recommended.'},
+  ],
+  aswan: [
+    {id:'aswan-1',name:'Nile Felucca Sunset Cruise',dest:'aswan',price:'From $35',priceNum:35,icon:'⛵',bg:'c-blue',loc:'Aswan, Nile River',badge:'✨ Romantic',desc:'Sail the timeless Nile on a traditional felucca at golden hour.',tags:['relaxation','luxury'],tagLabels:['⛵ Nile','✨ Luxury'],details:[{l:'Duration',v:'2 Hours'},{l:'Departure',v:'5:00 PM'},{l:'Group Size',v:'Private or Group'},{l:'Season',v:'Year Round'}],includes:['Felucca boat','Tea & soft drinks','Captain'],extra:'Great for couples and small families.'},
+  ]
+};
+
+let bookings = [
+  {name:'Ahmed Hassan',trip:'Dolphin Watch Safari',date:'2026-06-15',guests:'2 adults',contact:'+20 100 123 4567',status:'new'},
+  {name:'Sarah Mitchell',trip:'Valley of the Kings',date:'2026-06-20',guests:'1 adult',contact:'sarah@email.com',status:'confirmed'},
+  {name:'Marco Rossi',trip:'Turtle Island Snorkeling',date:'2026-06-18',guests:'2 adults + 1 child',contact:'+39 333 456 789',status:'pending'},
+];
+
+let editingId = null;
+let currentDestFilter = 'all';
+
+// ── NAV ──
+function nav(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  el.classList.add('active');
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'trips') renderTripsTable();
+  if (page === 'bookings') renderBookings();
+  if (page === 'export') renderExport();
+}
+
+// ── DASHBOARD ──
+function renderDashboard() {
+  const all = getAllTrips();
+  document.getElementById('stat-trips').textContent = all.length;
+  document.getElementById('stat-bookings').textContent = bookings.length;
+  const avg = all.length ? Math.round(all.reduce((s,t) => s + t.priceNum, 0) / all.length) : 0;
+  document.getElementById('stat-price').textContent = '$' + avg;
+  const tbody = document.getElementById('dash-table');
+  tbody.innerHTML = all.map(t => `
+    <tr>
+      <td><span class="trip-icon-cell" style="background:${getBg(t.bg)}">${t.mainImage ? `<img src="${t.mainImage}" class="table-img" onerror="this.style.display='none';this.previousSibling.style.display='inline'"/>` : t.icon}</span></td>
+      <td style="font-weight:500">${t.name}</td>
+      <td><span class="badge badge-${t.dest}">${t.dest}</span></td>
+      <td>${t.price}</td>
+      <td style="color:var(--muted);font-size:12px">${t.tagLabels.slice(0,2).join(' · ')}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="openEditModal('${t.id}')">Edit</button></td>
+    </tr>`).join('');
+}
+
+function getAllTrips() {
+  return Object.entries(allTrips).flatMap(([dest, trips]) => trips.map(t => ({...t, dest})));
+}
+
+function getBg(cls) {
+  const map = {'c-teal':'linear-gradient(135deg,#9EE8F0,#2BBFCF)','c-sun':'linear-gradient(135deg,#FFE0B2,#F4A535)','c-green':'linear-gradient(135deg,#B8F0C0,#3DB85C)','c-coral':'linear-gradient(135deg,#FFD0C0,#E05C3A)','c-blue':'linear-gradient(135deg,#C0DEFF,#4A90D9)'};
+  return map[cls] || map['c-teal'];
+}
+
+// ── TRIPS TABLE ──
+function filterDest(dest, el) {
+  currentDestFilter = dest;
+  document.querySelectorAll('.dest-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderTripsTable();
+}
+
+function renderTripsTable() {
+  const all = getAllTrips();
+  const filtered = currentDestFilter === 'all' ? all : all.filter(t => t.dest === currentDestFilter);
+  const tbody = document.getElementById('trips-table');
+  tbody.innerHTML = filtered.length ? filtered.map(t => `
+    <tr>
+      <td><span class="trip-icon-cell" style="background:${getBg(t.bg)}">${t.mainImage ? `<img src="${t.mainImage}" class="table-img" onerror="this.style.display='none'"/>` : t.icon}</span></td>
+      <td style="font-weight:600">${t.name}</td>
+      <td><span class="badge badge-${t.dest}">${t.dest}</span></td>
+      <td style="color:var(--teal);font-weight:600">${t.price}</td>
+      <td style="color:var(--muted);font-size:12px">${t.badge}</td>
+      <td style="color:var(--muted);font-size:12px">${t.tags.join(', ')}</td>
+      <td style="display:flex;gap:6px;padding:10px 16px">
+        <button class="btn btn-ghost btn-sm" onclick="openEditModal('${t.id}')">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteTrip('${t.id}')">🗑️</button>
+      </td>
+    </tr>`).join('') : `<tr><td colspan="7"><div class="empty-state"><div class="emoji">🏝️</div>No trips in this destination yet.</div></td></tr>`;
+}
+
+// ── BOOKINGS ──
+function renderBookings() {
+  const tbody = document.getElementById('bookings-table');
+  tbody.innerHTML = bookings.map(b => `
+    <tr>
+      <td style="font-weight:600">${b.name}</td>
+      <td>${b.trip}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px">${b.date}</td>
+      <td style="color:var(--muted);font-size:12px">${b.guests}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px">${b.contact}</td>
+      <td><span class="booking-status status-${b.status}">${b.status}</span></td>
+    </tr>`).join('');
+}
+
+// ── EXPORT ──
+function renderExport() {
+  const code = 'const allTrips = ' + JSON.stringify(allTrips, null, 2) + ';';
+  document.getElementById('export-code').textContent = code;
+}
+function copyExport() {
+  const code = 'const allTrips = ' + JSON.stringify(allTrips, null, 2) + ';';
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.querySelector('.btn-export');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy JS', 2000);
+  });
+}
+
+// ── MODAL HELPERS ──
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'New Trip';
+  clearForm();
+  document.getElementById('trip-modal').classList.add('open');
+}
+
+function openEditModal(id) {
+  const t = getAllTrips().find(x => x.id === id);
+  if (!t) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = 'Edit Trip';
+  document.getElementById('f-name').value = t.name;
+  document.getElementById('f-dest').value = t.dest;
+  document.getElementById('f-price').value = t.price;
+  document.getElementById('f-priceNum').value = t.priceNum;
+  document.getElementById('f-oldP').value = t.oldP || '';
+  document.getElementById('f-disc').value = t.disc || '';
+  document.getElementById('f-icon').value = t.icon;
+  document.getElementById('f-bg').value = t.bg;
+  document.getElementById('f-loc').value = t.loc;
+  document.getElementById('f-badge').value = t.badge;
+  document.getElementById('f-desc').value = t.desc;
+  document.getElementById('f-tags').value = t.tags.join(',');
+  document.getElementById('f-tagLabels').value = t.tagLabels.join(',');
+  document.getElementById('f-extra').value = t.extra || '';
+  // details
+  const dr = document.getElementById('details-rows');
+  dr.innerHTML = '';
+  (t.details || []).forEach(d => addDetailRow(d.l, d.v));
+  // includes
+  const ir = document.getElementById('includes-rows');
+  ir.innerHTML = '';
+  (t.includes || []).forEach(i => addIncludeRow(i));
+  // mainImage
+  document.getElementById('f-mainImage').value = t.mainImage || '';
+  previewMainImage(t.mainImage || '');
+  // gallery
+  const gr = document.getElementById('gallery-rows');
+  gr.innerHTML = '';
+  (t.gallery || []).forEach(url => addGalleryRow(url));
+  document.getElementById('trip-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('trip-modal').classList.remove('open');
+}
+
+function clearForm() {
+  ['f-name','f-price','f-priceNum','f-oldP','f-disc','f-icon','f-loc','f-badge','f-desc','f-tags','f-tagLabels','f-extra','f-mainImage'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('main-img-preview').classList.remove('visible');
+  document.getElementById('details-rows').innerHTML = '';
+  document.getElementById('includes-rows').innerHTML = '';
+  document.getElementById('gallery-rows').innerHTML = '';
+  addDetailRow(); addDetailRow(); addDetailRow(); addDetailRow();
+  addIncludeRow(); addIncludeRow(); addIncludeRow();
+}
+
+function addDetailRow(l = '', v = '') {
+  const div = document.createElement('div');
+  div.className = 'details-row';
+  div.innerHTML = `<input placeholder="Label (e.g. Duration)" value="${l}"/><input placeholder="Value (e.g. 6 Hours)" value="${v}"/><button class="del-btn" onclick="this.parentElement.remove()">×</button>`;
+  document.getElementById('details-rows').appendChild(div);
+}
+
+function addGalleryRow(val = '') {
+  const div = document.createElement('div');
+  div.className = 'gallery-row';
+  div.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px">
+      <img class="gallery-thumb${val ? ' visible' : ''}" src="${val}" onerror="this.classList.remove('visible')" alt=""/>
+      <input placeholder="https://..." value="${val}" style="flex:1" oninput="updateGalleryThumb(this)"/>
+    </div>
+    <button class="del-btn" onclick="this.parentElement.remove()">×</button>`;
+  document.getElementById('gallery-rows').appendChild(div);
+}
+
+function updateGalleryThumb(input) {
+  const img = input.parentElement.querySelector('.gallery-thumb');
+  img.src = input.value;
+  img.classList.toggle('visible', !!input.value);
+}
+
+function previewMainImage(url) {
+  const img = document.getElementById('main-img-preview');
+  img.src = url;
+  img.classList.toggle('visible', !!url);
+  img.onerror = () => img.classList.remove('visible');
+}
+
+function addIncludeRow(val = '') {
+  const div = document.createElement('div');
+  div.className = 'includes-row';
+  div.innerHTML = `<input placeholder="e.g. Hotel pickup & drop-off" value="${val}"/><button class="del-btn" onclick="this.parentElement.remove()">×</button>`;
+  document.getElementById('includes-rows').appendChild(div);
+}
+
+// ── SAVE TRIP ──
+function saveTrip() {
+  const name = document.getElementById('f-name').value.trim();
+  const dest = document.getElementById('f-dest').value;
+  if (!name) { alert('Trip name is required.'); return; }
+
+  const details = [...document.querySelectorAll('#details-rows .details-row')].map(row => {
+    const inputs = row.querySelectorAll('input');
+    return {l: inputs[0].value.trim(), v: inputs[1].value.trim()};
+  }).filter(d => d.l && d.v);
+
+  const includes = [...document.querySelectorAll('#includes-rows .includes-row input')].map(i => i.value.trim()).filter(Boolean);
+
+  const trip = {
+    id: editingId || dest + '-' + Date.now(),
+    name,
+    dest,
+    price: document.getElementById('f-price').value || 'Contact us',
+    priceNum: parseFloat(document.getElementById('f-priceNum').value) || 0,
+    oldP: document.getElementById('f-oldP').value.trim() || null,
+    disc: document.getElementById('f-disc').value.trim() || null,
+    icon: document.getElementById('f-icon').value.trim() || '🏝️',
+    bg: document.getElementById('f-bg').value,
+    loc: document.getElementById('f-loc').value.trim(),
+    badge: document.getElementById('f-badge').value.trim() || '⭐ New',
+    desc: document.getElementById('f-desc').value.trim(),
+    tags: document.getElementById('f-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+    tagLabels: document.getElementById('f-tagLabels').value.split(',').map(t => t.trim()).filter(Boolean),
+    details,
+    includes,
+    mainImage: document.getElementById('f-mainImage').value.trim() || null,
+    gallery: [...document.querySelectorAll('#gallery-rows .gallery-row input')].map(i => i.value.trim()).filter(Boolean),
+    extra: document.getElementById('f-extra').value.trim()
+  };
+
+  if (editingId) {
+    // update in place
+    for (const [d, trips] of Object.entries(allTrips)) {
+      const idx = trips.findIndex(t => t.id === editingId);
+      if (idx !== -1) {
+        // if dest changed, remove and add to new
+        if (d !== dest) {
+          allTrips[d].splice(idx, 1);
+          allTrips[dest].push(trip);
+        } else {
+          allTrips[d][idx] = trip;
+        }
+        break;
+      }
+    }
+  } else {
+    allTrips[dest].push(trip);
+  }
+
+  closeModal();
+  renderTripsTable();
+}
+
+// ── DELETE ──
+function deleteTrip(id) {
+  if (!confirm('Delete this trip?')) return;
+  for (const [dest, trips] of Object.entries(allTrips)) {
+    const idx = trips.findIndex(t => t.id === id);
+    if (idx !== -1) { allTrips[dest].splice(idx, 1); break; }
+  }
+  renderTripsTable();
+}
+
+// ── INIT ──
+renderDashboard();
+</script>
+</body>
+</html>
