@@ -7,6 +7,10 @@ const allTrips={
      badge:'⭐ Most Popular',disc:null,oldP:null,price:'From $65',priceNum:65,
      desc:'Swim alongside wild spinner dolphins in their natural lagoon. A 45 km reef teeming with dolphins, turtles, and vibrant coral.',
      tags:['snorkeling','dolphins'],tagLabels:['Snorkeling','Dolphins','Full Day','Overnight'],
+     options:[
+       {label:'Day Trip',duration:'1 Day',price:'From $65',priceNum:65},
+       {label:'Overnight',duration:'2 Days / 1 Night',price:'From $110',priceNum:110},
+     ],
      details:[{l:'Duration',v:'8 hrs / Overnight'},{l:'Departure',v:'Hamata Marina'},{l:'Level',v:'All Levels'},{l:'Group',v:'Small Groups'}],
      includes:['Snorkeling Equipment','Life Jacket','Lunch','Soft Drinks','Hotel Transfer','Guide'],
      extra:'⚠️ Marine Park fee: €2/person (cash on boat)'},
@@ -31,7 +35,11 @@ const allTrips={
      badge:'🐢 Turtle Heaven',disc:null,oldP:null,price:'From $20',priceNum:20,
      desc:'Crystal-clear shallow waters teeming with Green Sea Turtles year-round. One of the rare spots where Dugongs occasionally appear.',
      tags:['wildlife','snorkeling'],tagLabels:['Sea Turtles','Dugong','Snorkeling','Wildlife'],
-     details:[{l:'Duration',v:'Half Day'},{l:'Access',v:'Beach Entry'},{l:'Level',v:'All Levels'},{l:'Best For',v:'Families'}],
+     options:[
+       {label:'Half Day',duration:'4 hours',price:'From $20',priceNum:20},
+       {label:'Full Day',duration:'8 hours',price:'From $35',priceNum:35},
+     ],
+     details:[{l:'Duration',v:'Half Day / Full Day'},{l:'Access',v:'Beach Entry'},{l:'Level',v:'All Levels'},{l:'Best For',v:'Families'}],
      includes:['Beach Entry','Snorkeling Equipment','Guide'],
      extra:'⚠️ Entry: €20 adult / €10 child · Dugong speedboat: +$40 · Dive: +$40'},
     {id:'mubarak',name:'Marsa Mubarak',loc:'Port Ghalib, Marsa Alam',
