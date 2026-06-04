@@ -410,3 +410,16 @@ renderTrips();
 renderTripOptions();
 renderCal();
 
+
+let __searchTimeout;
+document.addEventListener('DOMContentLoaded',()=>{
+ const s=document.querySelector('input[type="search"],#search');
+ if(s){
+   s.addEventListener('input',()=>{
+      clearTimeout(__searchTimeout);
+      __searchTimeout=setTimeout(()=> {
+        if(typeof handleSearch==='function') handleSearch();
+      },300)
+   });
+ }
+});

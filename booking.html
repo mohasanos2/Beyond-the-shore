@@ -111,21 +111,39 @@
 <script>let activeDest="marsa";let trips=[];</script>
 <script src="js/app.js"></script>
 <script>
+document.addEventListener('DOMContentLoaded',()=>{
 const _bid=new URLSearchParams(window.location.search).get('bookid');
 if(_bid){
-  const t=findTrip(_bid);
-  if(t){
-    state.selectedTrip=t;
-    document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
-    document.getElementById('panel-2').classList.add('active');
-    document.getElementById('snum-1').className='step-num done';
-    document.getElementById('snum-1').textContent='✓';
-    document.getElementById('snum-2').className='step-num active';
-    document.getElementById('sline-1').className='step-line done';
-    renderCal();
-    updateSummary();
-  }
+ const t=findTrip(_bid);
+ if(t){
+   const dest=Object.keys(allTrips).find(d=>allTrips[d].find(x=>x.id===_bid));
+   if(dest){
+      activeDest=dest;
+      renderTripOptions();
+      const el=document.querySelector(`[data-id="${_bid}"]`);
+      if(el){
+        selectTrip(_bid,el);
+        goStep(2);
+      }
+   }
+ }
 }
+});
 </script>
 </body>
 </html>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const inputs=document.querySelectorAll('input');
+ try{
+ const saved=JSON.parse(localStorage.getItem('bookingState')||'{}');
+ inputs.forEach(i=>{if(saved[i.id]) i.value=saved[i.id]});
+ }catch(e){}
+ inputs.forEach(i=>i.addEventListener('input',()=>{
+   const data={};
+   inputs.forEach(x=>data[x.id]=x.value);
+   localStorage.setItem('bookingState',JSON.stringify(data));
+ }));
+});
+</script>
