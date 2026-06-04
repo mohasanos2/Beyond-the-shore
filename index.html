@@ -33,11 +33,11 @@
     <li><a onclick="showPage('home');scrollTo('#trips')">Trips</a></li>
     <li><a onclick="showPage('home');scrollTo('#why')">About</a></li>
     <li><a onclick="showPage('home');scrollTo('#reviews')">Reviews</a></li>
-    <li><a onclick="showPage('booking')">Book</a></li>
+    <li><a onclick="showPage('booking');goStep(0)">Book</a></li>
   </ul>
   <div class="nav-right">
     <button class="lang-btn">🌐 EN</button>
-    <button class="nav-cta" onclick="showPage('booking')">Book Now</button>
+    <button class="nav-cta" onclick="showPage('booking');goStep(0)">Book Now</button>
   </div>
 </nav>
 
@@ -69,7 +69,7 @@
             <div class="hcard-stars">★★★★★</div>
             <div class="hcard-name" id="hcard-main-name">Sataya Dolphin House</div>
             <div class="hcard-loc" id="hcard-main-loc">📍 Hamata, Marsa Alam</div>
-            <div class="hcard-foot"><div class="hcard-price" id="hcard-main-price">From $65</div><div class="hcard-book" onclick="showPage('booking')">Book Now</div></div>
+            <div class="hcard-foot"><div class="hcard-price" id="hcard-main-price">From $65</div><div class="hcard-book" onclick="showPage('booking');goStep(0)">Book Now</div></div>
           </div>
         </div>
         <div class="hcard hcard-sm hcard-sm1" id="hcard-sm1">
@@ -102,7 +102,7 @@
         <h2 class="sec-h">Explore <em>Egypt</em></h2>
         <p class="sec-sub">From the Red Sea reefs to the ancient temples of the Nile — unforgettable journeys across Egypt.</p>
       </div>
-      <a onclick="showPage('booking')" style="font-size:0.82rem;font-weight:600;color:var(--teal);text-decoration:none;cursor:pointer">Book a trip →</a>
+      <a onclick="showPage('booking');goStep(0)" style="font-size:0.82rem;font-weight:600;color:var(--teal);text-decoration:none;cursor:pointer">Book a trip →</a>
     </div>
 
 
@@ -173,7 +173,7 @@
       <h2 class="sec-h">Book Your <em>Adventure</em></h2>
       <p>Fill in a simple form and we'll confirm your trip within 24 hours — no payment required now.</p>
       <div class="cta-btns">
-        <button class="btn-book-page" onclick="showPage('booking')">📋 Reserve a Trip</button>
+        <button class="btn-book-page" onclick="showPage('booking');goStep(0)">📋 Reserve a Trip</button>
         <a href="https://wa.me/201037420949?text=Hi!%20I%20want%20to%20book%20a%20trip" target="_blank" class="btn-wa">💬 WhatsApp Us</a>
       </div>
     </div>
@@ -193,7 +193,7 @@
         </div>
         <div class="fcol">
           <h4>Quick Links</h4>
-          <a onclick="showPage('booking')">Book a Trip</a>
+          <a onclick="showPage('booking');goStep(0)">Book a Trip</a>
           <a onclick="showPage('home');scrollTo('#why')">About Us</a>
           <a onclick="showPage('home');scrollTo('#reviews')">Reviews</a>
         </div>
@@ -239,6 +239,42 @@
           <span class="step-label" id="slabel-3">Your Details</span>
         </div>
       </div>
+<!-- STEP 0: Destination -->
+<div class="step-panel" id="panel-0">
+  <div class="step-card">
+    <h3>Where do you want to go?</h3>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div class="trip-option" onclick="selectDestPanel('marsa',this)">
+        <div class="trip-option-icon" style="background:linear-gradient(135deg,#9EE8F0,#2BBFCF)">🌊</div>
+        <div class="trip-option-info">
+          <div class="trip-option-name">Marsa Alam</div>
+          <div class="trip-option-meta">Red Sea · Dolphins · Diving</div>
+        </div>
+        <div class="trip-option-radio"></div>
+      </div>
+      <div class="trip-option" onclick="selectDestPanel('luxor',this)">
+        <div class="trip-option-icon" style="background:linear-gradient(135deg,#FFE9A0,#D4A017)">🏛️</div>
+        <div class="trip-option-info">
+          <div class="trip-option-name">Luxor</div>
+          <div class="trip-option-meta">Temples · Balloon · Nile</div>
+        </div>
+        <div class="trip-option-radio"></div>
+      </div>
+      <div class="trip-option" onclick="selectDestPanel('aswan',this)">
+        <div class="trip-option-icon" style="background:linear-gradient(135deg,#F5DEB3,#C8860A)">🏺</div>
+        <div class="trip-option-info">
+          <div class="trip-option-name">Aswan</div>
+          <div class="trip-option-meta">Abu Simbel · Nile Cruise · Nubia</div>
+        </div>
+        <div class="trip-option-radio"></div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <span></span>
+      <button class="btn-next" id="btn-next-0" disabled onclick="goStep(1)">Next →</button>
+    </div>
+  </div>
+</div>
 
       <!-- STEP 1: Trip -->
       <div class="step-panel active" id="panel-1">
@@ -408,6 +444,15 @@
 
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
+<script>
+const _ss=sessionStorage.getItem('bookid');
+if(_ss){
+  sessionStorage.removeItem('bookid');
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('booking').classList.add('active');
+  setTimeout(()=>bookDirect(_ss),300);
+}
+</script>
 <script>
 // ── BG EMOJIS PER DESTINATION ──
 const destEmojis={

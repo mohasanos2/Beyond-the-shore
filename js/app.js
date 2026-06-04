@@ -70,7 +70,7 @@ function renderTrips(filter='all'){
       <div class="tcard-tags">${t.tagLabels.map(x=>`<span class="tcard-tag">${x}</span>`).join('')}</div>
       <div class="tcard-foot">
         <div>${t.oldP?`<span class="price-old">${t.oldP}</span>`:''}<span class="price-new">${t.price} <small>/ person</small></span></div>
-        <button class="tcard-btn">Book Now</button>
+        <button class="tcard-btn" onclick="event.stopPropagation();bookDirect('${t.id}')">Book Now</button>
       </div>
     </div>
   </div>`).join('');
@@ -101,7 +101,7 @@ function handleSearch(){
       <div class="tcard-name">${t.name}</div>
       <div class="tcard-desc">${t.desc}</div>
       <div class="tcard-tags">${t.tagLabels.map(x=>`<span class="tcard-tag">${x}</span>`).join('')}</div>
-      <div class="tcard-foot"><div><span class="price-new">${t.price} <small>/ person</small></span></div><button class="tcard-btn">Book Now</button></div>
+      <div class="tcard-foot"><div><span class="price-new">${t.price} <small>/ person</small></span></div><button class="tcard-btn" onclick="event.stopPropagation();bookDirect('${t.id}')">Book Now</button></div>
     </div>
   </div>`).join(''):'<p style="color:var(--ink-light);padding:2rem;grid-column:1/-1">No trips matched your search. Try "dolphins", "turtles", or "diving".</p>';
   document.getElementById('trips').scrollIntoView({behavior:'smooth'});
@@ -138,24 +138,46 @@ function closeModal(){
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow='';
 }
-function bookFromModal(){
-  closeModal();
-  state.selectedTrip=findTrip(modalTripId);
-  showPage('booking');
-  goStep(1);
+function bookDirect(id){
+  const t=findTrip(id);
+  if(!t)return;
+  state.selectedTrip=t;
+  switchDest(Object.keys(allTrips).find(d=>allTrips[d].find(x=>x.id===id)),null);
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('booking').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>goStep(2),100);
+}
+function bookTrip(id){
+  state.selectedTrip=findTrip(id);
+  showPage("booking");
   setTimeout(()=>{
-    document.querySelectorAll('.trip-option').forEach(el=>{
-      if(el.dataset.id===modalTripId){el.click()}
+    renderTripOptions();
+    document.querySelectorAll(".trip-option").forEach(el=>{
+      if(el.dataset.id===id)el.click();
     });
+    setTimeout(()=>goStep(2),100);
   },200);
+}
+function bookFromModal(){
+  bookDirect(modalTripId);
+  closeModal();
 }
 document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeModal()});
 
 // ── BOOKING STEPS ──
-function goStep(n){
+
+function selectDestPanel(dest,el){
+  document.querySelectorAll('#panel-0 .trip-option').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  switchDest(dest,null);
+  renderTripOptions();
+  document.getElementById('btn-next-0').disabled=false;
+}function goStep(n){
   if(n===2&&!state.selectedTrip)return;
   if(n===3&&!state.selectedDate)return;
-  state.currentStep=n;
+  
+  if(n===0){state.selectedTrip=null;state.selectedDate=null;}state.currentStep=n;
   document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+n).classList.add('active');
   // update steps bar
@@ -171,14 +193,15 @@ function goStep(n){
     }
   }
   updateSummary();
-  document.querySelector('#booking-page').scrollIntoView({behavior:'smooth'});
+  document.getElementById('booking').scrollIntoView({behavior:'smooth'});
 }
 
 // ── TRIP OPTIONS in booking ──
 function renderTripOptions(){
+  const destTripsOnly=allTrips[activeDest]||[];
   const destLabels={marsa:'🌊 Marsa Alam',luxor:'🏛️ Luxor',aswan:'🏺 Aswan'};
   let html='';
-  for(const [dest,destTrips] of Object.entries(allTrips)){
+  const dest=activeDest;const destTrips=allTrips[activeDest];{
     html+=`<div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);margin:1rem 0 0.5rem;padding-left:0.2rem">${destLabels[dest]}</div>`;
     html+=destTrips.map(t=>`
     <div class="trip-option" data-id="${t.id}" onclick="selectTrip('${t.id}',this)">
@@ -232,11 +255,13 @@ function changeMonth(dir){
   if(state.calMonth>11){state.calMonth=0;state.calYear++}
   if(state.calMonth<0){state.calMonth=11;state.calYear--}
   renderCal();
+
 }
 
 function selectDate(d){
   state.selectedDate=d;
   renderCal();
+
   document.getElementById('btn-next-2').disabled=false;
   updateSummary();
 }
@@ -312,7 +337,7 @@ function submitBooking(){
     <div class="success-detail-row"><span>Name</span><span>${fname} ${lname}</span></div>`;
   document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-success').classList.add('active');
-  document.querySelector('#booking-page').scrollIntoView({behavior:'smooth'});
+  document.getElementById('booking').scrollIntoView({behavior:'smooth'});
 }
 
 
@@ -384,3 +409,4 @@ document.getElementById('hero-section').classList.add('dest-marsa');
 renderTrips();
 renderTripOptions();
 renderCal();
+

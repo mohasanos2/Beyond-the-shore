@@ -162,11 +162,11 @@
     <li><a href="index.html#trips">Trips</a></li>
     <li><a href="index.html#why">About</a></li>
     <li><a href="index.html#reviews">Reviews</a></li>
-    <li><a href="index.html#booking">Book</a></li>
+    <li><a href="javascript:void(0)" onclick="window.location.href='booking.html?bookid='+id">Book</a></li>
   </ul>
   <div class="nav-right">
     <button class="lang-btn">🌐 EN</button>
-    <button class="nav-cta" onclick="window.location.href='index.html#booking'">Book Now</button>
+    <button class="nav-cta" onclick="window.location.href='booking.html?bookid='+id">Book Now</button>
   </div>
 </nav>
 
@@ -253,7 +253,7 @@ if(!t){
         <a class="cta-wa" href="https://wa.me/201037420949?text=${waMsg}">
           💬 Book via WhatsApp
         </a>
-        <a class="cta-book" href="index.html#book-cta">
+        <a class="cta-book" href="javascript:void(0)" onclick="window.location.href='booking.html?bookid='+id">
           📋 Full Booking Form
         </a>
       </div>
