@@ -394,11 +394,11 @@ function showToast(msg, type='success') {
 }
 async function loadTripsAdmin() {
   await initTripsData();
-  const all = [...(allTrips.marsa||[]), ...(allTrips.luxor||[]), ...(allTrips.aswan||[])];
+  const all = [...(window.allTrips.marsa||[]), ...(window.allTrips.luxor||[]), ...(window.allTrips.aswan||[])];
   document.getElementById('stat-total').textContent = all.length;
-  document.getElementById('stat-marsa').textContent = (allTrips.marsa||[]).length;
-  document.getElementById('stat-luxor').textContent = (allTrips.luxor||[]).length;
-  document.getElementById('stat-aswan').textContent = (allTrips.aswan||[]).length;
+  document.getElementById('stat-marsa').textContent = (window.allTrips.marsa||[]).length;
+  document.getElementById('stat-luxor').textContent = (window.allTrips.luxor||[]).length;
+  document.getElementById('stat-aswan').textContent = (window.allTrips.aswan||[]).length;
   renderAdminTrips(all);
 }
 function renderAdminTrips(trips) {
@@ -431,7 +431,7 @@ function openAddTrip() {
   document.getElementById('trip-modal').classList.add('open');
 }
 function editTrip(id) {
-  const all = [...(allTrips.marsa||[]), ...(allTrips.luxor||[]), ...(allTrips.aswan||[])];
+  const all = [...(window.allTrips.marsa||[]), ...(window.allTrips.luxor||[]), ...(window.allTrips.aswan||[])];
   const t = all.find(x => x.id === id);
   if (!t) return;
   editingId = id;

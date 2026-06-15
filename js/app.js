@@ -4,6 +4,8 @@ const MONTHS=['January','February','March','April','May','June','July','August',
 const MONTHS_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 // ── STATE ──
+let activeDest='marsa';
+let trips=[];
 let state={
   currentStep:1,
   selectedTrip:null,
@@ -197,7 +199,7 @@ function renderTripOptions(){
   if (!new URLSearchParams(window.location.search).get('dest')) {
     localStorage.removeItem('bts_dest');
   }
-  const _src = window.allTrips || allTrips;
+  const _src = window.allTrips || {};
   const _marsa = _src.marsa || [];
   const _luxor = _src.luxor || [];
   const _aswan = _src.aswan || [];
@@ -208,7 +210,7 @@ function renderTripOptions(){
   let html='';
   const _filteredTrips = _destParam && ['marsa','luxor','aswan'].includes(_destParam)
     ? {[_destParam]: trips}
-    : (window.allTrips || allTrips);
+    : (window.allTrips || {});
   Object.keys(_filteredTrips).forEach(dest=>{
     html+=`<div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);margin:1rem 0 0.5rem;padding-left:0.2rem">${destLabels[dest]||dest}</div>`;
     html+=_filteredTrips[dest].map(t=>`
@@ -521,6 +523,46 @@ function _openMailto(t, fname, lname, p) {
   window.location.href = `mailto:beyondtheshore.egypt@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
+// ── HERO DESTINATION DATA ──
+const heroData={
+  marsa:{
+    eyebrow:'🌊 Marsa Alam · Red Sea · Egypt',
+    h1:'Dive Into the<br/><em>Untouched</em><br/>Red <strong>Sea</strong>',
+    sub:'Swim with wild dolphins at Sataya. Encounter rare dugongs at Abu Dabbab. Discover three virgin islands at Hamata. Your journey starts here.',
+    search:'Search — dolphins, turtles, diving…',
+    theme:'dest-marsa',
+    main:{icon:'🐬',bg:'linear-gradient(135deg,#9EE8F0,#2BBFCF)',name:'Sataya Dolphin House',loc:'Hamata, Marsa Alam',price:'From $65'},
+    sm1:{icon:'🏝️',bg:'linear-gradient(135deg,#FFE0B2,#F4A535)',name:'Hamata Islands',price:'From $70'},
+    sm2:{icon:'🦭',bg:'linear-gradient(135deg,#FFD0C0,#E05C3A)',name:'Abu Dabbab Bay',price:'From $20'},
+    pills:['🐢 Sea Turtles Guaranteed','📸 Photos Included'],
+    stats:[{n:'93%',l:'Dolphin Rate'},{n:'6 Sites',l:'Marsa Alam'},{n:'★ 5.0',l:'Average Rating'},{n:'100%',l:'Private Guided'}],
+  },
+  luxor:{
+    eyebrow:'🏛️ Luxor · Nile Valley · Egypt',
+    h1:'Step Into the<br/><em>Heart of</em><br/>Ancient <strong>Egypt</strong>',
+    sub:'Float above the Valley of the Kings at sunrise. Walk among pharaohs at Karnak. Sail the timeless Nile by felucca as the golden light fades over the temples.',
+    search:'Search — balloon, temples, Valley of Kings…',
+    theme:'dest-luxor',
+    main:{icon:'🎈',bg:'linear-gradient(135deg,#FFD0A0,#F4722A)',name:'Sunrise Hot Air Balloon',loc:'West Bank, Luxor',price:'From $80'},
+    sm1:{icon:'🏛️',bg:'linear-gradient(135deg,#FFE9A0,#D4A017)',name:'Temples & Tombs Full Day',price:'From $45'},
+    sm2:{icon:'⛵',bg:'linear-gradient(135deg,#FFD6E0,#E05C8A)',name:'Sunset Felucca on the Nile',price:'From $15'},
+    pills:['🗿 Certified Egyptologist','🌅 Sunrise Balloon'],
+    stats:[{n:'4 Tours',l:'Luxor Highlights'},{n:'3000+',l:'Years of History'},{n:'★ 5.0',l:'Average Rating'},{n:'100%',l:'Private Guided'}],
+  },
+  aswan:{
+    eyebrow:'🏺 Aswan · Nubian Egypt · Upper Nile',
+    h1:'Sail to the<br/><em>Edge of</em><br/>Ancient <strong>Nubia</strong>',
+    sub:'Stand before Ramses II at Abu Simbel. Cruise four days from Aswan to Luxor on a 5-star Nile cruiser. Discover the colorful soul of Nubian village life.',
+    search:'Search — Abu Simbel, Nile cruise, Nubia…',
+    theme:'dest-aswan',
+    main:{icon:'🚢',bg:'linear-gradient(135deg,#A8D8EA,#0E6BA8)',name:'4-Day Nile Cruise',loc:'Aswan → Luxor',price:'From $350'},
+    sm1:{icon:'🗿',bg:'linear-gradient(135deg,#F5DEB3,#C8860A)',name:'Abu Simbel & Philae',price:'From $90'},
+    sm2:{icon:'🏘️',bg:'linear-gradient(135deg,#FFCBA4,#E07B39)',name:'Nubian Village Tour',price:'From $35'},
+    pills:['🗿 Abu Simbel Wonder','🚢 5-Star Nile Cruise'],
+    stats:[{n:'3 Icons',l:'Aswan Wonders'},{n:'1244 BC',l:'Abu Simbel Built'},{n:'★ 5.0',l:'Average Rating'},{n:'100%',l:'Private Guided'}],
+  },
+};
+
 // ── HERO DESTINATION SWITCH ──
 function switchDestHero(dest,el){
   document.querySelectorAll('#hero-dest-chips .hero-chip').forEach(c=>c.classList.remove('active'));
@@ -572,6 +614,8 @@ if($('hero-section'))$('hero-section').classList.add('dest-marsa');
     grid.innerHTML = `<div style="grid-column:1/-1;padding:3rem;text-align:center;color:var(--ink-light,#888);font-family:Outfit,sans-serif">Loading trips…</div>`;
   }
   await initTripsData();
+  activeDest = window.activeDest || 'marsa';
+  trips = window.trips || (window.allTrips || {})[activeDest] || [];
   if (grid) renderTrips();
   if ($('trip-options')) renderTripOptions();
   if ($('date-grid')) renderCal();

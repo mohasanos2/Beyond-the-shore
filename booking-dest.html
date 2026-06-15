@@ -118,9 +118,9 @@
 (async () => {
   await initTripsData();
   const counts = {
-    marsa: (allTrips.marsa||[]).length,
-    luxor: (allTrips.luxor||[]).length,
-    aswan: (allTrips.aswan||[]).length,
+    marsa: (window.allTrips.marsa||[]).length,
+    luxor: (window.allTrips.luxor||[]).length,
+    aswan: (window.allTrips.aswan||[]).length,
   };
   Object.entries(counts).forEach(([dest, n]) => {
     const el = document.getElementById('count-' + dest);
