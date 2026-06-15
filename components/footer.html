@@ -1,0 +1,37 @@
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="flogo"><a href="index.html"><picture>
+        <source srcset="https://mohasanos2.github.io/Beyond-the-shore/images/logo.webp" type="image/webp">
+        <img src="https://mohasanos2.github.io/Beyond-the-shore/images/logo.png" alt="Beyond The Shore" class="logo-img flogo-img"
+             width="120" height="142" loading="lazy"/>
+      </picture></a></div>
+      <div class="ftagline">Red Sea Experiences · Marsa Alam, Egypt</div>
+    </div>
+    <div class="fcols">
+      <div class="fcol">
+        <h4>Destinations</h4>
+        <a href="trip.html?id=sataya">Sataya — Dolphin House</a><a href="trip.html?id=hamata">Hamata Islands</a><a href="trip.html?id=coral">Coral Garden</a><a href="trip.html?id=abu">Abu Dabbab</a><a href="trip.html?id=mubarak">Marsa Mubarak</a>
+      </div>
+      <div class="fcol">
+        <h4>Quick Links</h4>
+        <a href="booking-dest.html">Book a Trip</a>
+        <a href="about.html">About Us</a>
+        <a href="index.html#reviews">Reviews</a>
+      </div>
+      <div class="fcol">
+        <h4>Contact</h4>
+        <a href="https://wa.me/201037420949" target="_blank">WhatsApp</a>
+        <a href="mailto:hello@beyondtheshore.com">Email Us</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="fcopy">© <span id="footer-year"></span> Beyond The Shore. All rights reserved.</div>
+    <div class="floc">📍 Marsa Alam, Red Sea Governorate, Egypt</div>
+  </div>
+<script>
+  var el = document.getElementById('footer-year');
+  if(el) el.textContent = new Date().getFullYear();
+</script>
+</footer>

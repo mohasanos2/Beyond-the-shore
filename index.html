@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: https: blob:; font-src https://fonts.gstatic.com; connect-src 'self' https://bgkwvyjyjorzwtuircmf.supabase.co https://beyond-the-shore-api.onrender.com; frame-ancestors 'none';">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Beyond The Shore — Red Sea Experiences</title>
+<meta name="description" content="Book Red Sea trips in Marsa Alam, Luxor and Aswan. Dolphins, snorkeling, islands and unforgettable experiences."/>
+<meta name="theme-color" content="#0797A8"/>
+<link rel="icon" type="image/x-icon" href="images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://mohasanos2.github.io/Beyond-the-shore/"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Beyond The Shore — Red Sea Experiences"/>
+<meta property="og:description" content="Book Red Sea trips in Marsa Alam, Luxor and Aswan. Dolphins, snorkeling, islands and unforgettable experiences."/>
+<meta property="og:image" content="https://mohasanos2.github.io/Beyond-the-shore/images/logo.png"/>
+<meta property="og:url" content="https://mohasanos2.github.io/Beyond-the-shore/"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Beyond The Shore — Red Sea Experiences"/>
+<meta name="twitter:description" content="Book Red Sea trips in Marsa Alam, Luxor and Aswan."/>
+<meta name="twitter:image" content="https://mohasanos2.github.io/Beyond-the-shore/images/logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- FLOATING BG EMOJIS -->
+<div class="bg-emojis" id="bg-emojis">
+  <span class="bg-emoji">🐬</span>
+  <span class="bg-emoji">🐢</span>
+  <span class="bg-emoji">🪸</span>
+  <span class="bg-emoji">🐠</span>
+  <span class="bg-emoji">🦭</span>
+  <span class="bg-emoji">🌊</span>
+  <span class="bg-emoji">🐟</span>
+  <span class="bg-emoji">⭐</span>
+  <span class="bg-emoji">🐬</span>
+  <span class="bg-emoji">🪸</span>
+  <span class="bg-emoji">🐙</span>
+  <span class="bg-emoji">🐡</span>
+</div>
+
+<!-- NAV -->
+<div id="navbar-component"></div>
+
+<!-- ══════════ HOME PAGE ══════════ -->
+<div id="home">
+
+  <!-- HERO -->
+  <section class="hero" id="hero-section">
+    <div class="hero-glow" id="hero-glow"></div><div class="hero-glow2" id="hero-glow2"></div>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-eyebrow" id="hero-eyebrow">🌊 Marsa Alam · Red Sea · Egypt</div>
+        <h1 id="hero-h1">Dive Into the<br/><em>Untouched</em><br/>Red <strong>Sea</strong></h1>
+        <p class="hero-sub" id="hero-sub">Swim with wild dolphins at Sataya. Encounter rare dugongs at Abu Dabbab. Discover three virgin islands at Hamata. Your journey starts here.</p>
+        <div class="hero-search">
+          <input type="text" placeholder="Search — dolphins, turtles, diving…" id="search-input" onkeydown="if(event.key==='Enter')handleSearch()"/>
+          <button onclick="handleSearch()">Search</button>
+        </div>
+        <div class="hero-chips" id="hero-dest-chips">
+          <span class="hero-chip active" onclick="switchDestHero('marsa',this)">🌊 Marsa Alam</span>
+          <span class="hero-chip" onclick="switchDestHero('luxor',this)">🏛️ Luxor</span>
+          <span class="hero-chip" onclick="switchDestHero('aswan',this)">🏺 Aswan</span>
+        </div>
+
+      </div>
+      <div class="hero-right" id="hero-right">
+        <div class="hcard hcard-main" id="hcard-main" data-id="1">
+          <div class="hcard-main-img" id="hcard-main-img" style="background:linear-gradient(135deg,#9EE8F0,#2BBFCF)">🐬</div>
+          <div class="hcard-body">
+            <div class="hcard-stars">★★★★★</div>
+            <div class="hcard-name" id="hcard-main-name">Sataya Dolphin House</div>
+            <div class="hcard-loc" id="hcard-main-loc">📍 Hamata, Marsa Alam</div>
+            <div class="hcard-foot"><div class="hcard-price" id="hcard-main-price">From $65</div><div class="hcard-book" onclick="BookingRouter.goToBooking()">Book Now</div></div>
+          </div>
+        </div>
+        <div class="hcard hcard-sm hcard-sm1" id="hcard-sm1" data-id="2">
+          <div class="hcard-sm-img" id="hcard-sm1-img" style="background:linear-gradient(135deg,#FFE0B2,#F4A535)">🏝️</div>
+          <div class="hcard-sm-body"><div class="hcard-sm-name" id="hcard-sm1-name">Hamata Islands</div><div class="hcard-sm-price" id="hcard-sm1-price">From $70</div></div>
+        </div>
+        <div class="hcard hcard-sm hcard-sm2" id="hcard-sm2" data-id="3">
+          <div class="hcard-sm-img" id="hcard-sm2-img" style="background:linear-gradient(135deg,#FFD0C0,#E05C3A)">🦭</div>
+          <div class="hcard-sm-body"><div class="hcard-sm-name" id="hcard-sm2-name">Abu Dabbab Bay</div><div class="hcard-sm-price" id="hcard-sm2-price">From $20</div></div>
+        </div>
+        <div class="pill pill-a" id="pill-a">🐢 Sea Turtles Guaranteed</div>
+        <div class="pill pill-b" id="pill-b">📸 Photos Included</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><span class="stat-n">5+</span><span class="stat-l">Destinations</span></div>
+    <div class="stat"><span class="stat-n">93%</span><span class="stat-l">Dolphin Rate</span></div>
+    <div class="stat"><span class="stat-n">★ 5.0</span><span class="stat-l">Average Rating</span></div>
+    <div class="stat"><span class="stat-n">100%</span><span class="stat-l">Private Guided</span></div>
+  </div>
+
+  <!-- TRIPS -->
+  <section id="trips">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;margin-bottom:2rem">
+      <div>
+        <div class="sec-tag">Our Experiences</div>
+        <h2 class="sec-h">Explore <em>Egypt</em></h2>
+        <p class="sec-sub">From the Red Sea reefs to the ancient temples of the Nile — unforgettable journeys across Egypt.</p>
+      </div>
+      <a onclick="BookingRouter.goToBooking()" style="font-size:0.82rem;font-weight:600;color:var(--teal);text-decoration:none;cursor:pointer">Book a trip →</a>
+    </div>
+
+
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar" id="filter-bar">
+      <button class="fbtn active" onclick="filterTrips('all',this)">All</button>
+      <button class="fbtn" id="fb-snorkeling" onclick="filterTrips('snorkeling',this)">🤿 Snorkeling</button>
+      <button class="fbtn" id="fb-diving" onclick="filterTrips('diving',this)">🐠 Diving</button>
+      <button class="fbtn" id="fb-dolphins" onclick="filterTrips('dolphins',this)">🐬 Dolphins</button>
+      <button class="fbtn" id="fb-wildlife" onclick="filterTrips('wildlife',this)">🦭 Wildlife</button>
+      <button class="fbtn" id="fb-islands" onclick="filterTrips('islands',this)">🏝️ Islands</button>
+    </div>
+    <div class="trips-grid" id="trips-grid"></div>
+  </section>
+
+  <!-- WHY -->
+  <section id="why">
+    <div class="why-inner">
+      <div class="why-top">
+        <div>
+          <div class="sec-tag">Why Beyond The Shore</div>
+          <h2 class="sec-h">More Than Just <em>a Tour</em></h2>
+          <p class="sec-sub">We are local experts who live and breathe the Red Sea. Our underwater photography background means we know every reef, every current, and every magical moment beneath the surface.</p>
+          <div class="feat-grid">
+            <div class="feat"><div class="feat-icon">📸</div><div class="feat-title">Underwater Photos</div><div class="feat-desc">Professional shots of your experience — memories you keep forever.</div></div>
+            <div class="feat"><div class="feat-icon">🧭</div><div class="feat-title">Local Expert</div><div class="feat-desc">Born in Marsa Alam — we know every hidden reef and secret spot.</div></div>
+            <div class="feat"><div class="feat-icon">🛡️</div><div class="feat-title">Safety First</div><div class="feat-desc">Certified guides, full equipment, Marine Police coordination.</div></div>
+            <div class="feat"><div class="feat-icon">👥</div><div class="feat-title">Small Groups</div><div class="feat-desc">Intimate sizes for a personal, unhurried experience.</div></div>
+          </div>
+        </div>
+        <div class="why-vis"><div class="sun-orb">🤿</div></div>
+      </div>
+      <div class="sec-tag" style="margin-bottom:0.5rem">The Difference</div>
+      <h2 class="sec-h" style="margin-bottom:2rem">Why Travelers <em>Choose Us</em></h2>
+      <div class="compare-wrap">
+        <div class="compare-head">
+          <div class="compare-head-cell">Feature</div>
+          <div class="compare-head-cell hl">✦ Beyond The Shore</div>
+          <div class="compare-head-cell">Other Operators</div>
+        </div>
+        <div class="compare-row"><div class="compare-cell">Group Size</div><div class="compare-cell hl"><span class="chk">✓</span> &nbsp;Small private groups</div><div class="compare-cell center">50–100 people</div></div>
+        <div class="compare-row"><div class="compare-cell">Underwater Photos</div><div class="compare-cell hl"><span class="chk">✓</span> &nbsp;Included</div><div class="compare-cell center"><span class="crs">✗</span> &nbsp;Paid extra</div></div>
+        <div class="compare-row"><div class="compare-cell">Local Expert Guide</div><div class="compare-cell hl"><span class="chk">✓</span> &nbsp;Born in Marsa Alam</div><div class="compare-cell center">Standard guide</div></div>
+        <div class="compare-row"><div class="compare-cell">Hidden Spots Access</div><div class="compare-cell hl"><span class="chk">✓</span> &nbsp;Secret reefs & sites</div><div class="compare-cell center"><span class="crs">✗</span> &nbsp;Tourist routes only</div></div>
+        <div class="compare-row"><div class="compare-cell">WhatsApp Support</div><div class="compare-cell hl"><span class="chk">✓</span> &nbsp;Direct & personal</div><div class="compare-cell center">Call center</div></div>
+        <div class="compare-row"><div class="compare-cell">Free Cancellation</div><div class="compare-cell hl"><span class="chk">✓</span> &nbsp;24 hrs in advance</div><div class="compare-cell center">Varies</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="reviews">
+    <div class="sec-tag">Guest Experiences</div>
+    <h2 class="sec-h">What Travelers <em>Say</em></h2>
+    <p class="sec-sub">Real stories from guests who explored the Red Sea with us.</p>
+    <div class="reviews-grid">
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Swimming with 80 dolphins at Sataya was the most magical moment of my life. The guide knew exactly where to take us — absolutely unforgettable."</p><div class="review-author"><div class="review-avatar">🇩🇪</div><div><div class="review-name">Anna K.</div><div class="review-trip">Sataya Dolphin House</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"We saw turtles, a dugong, and dolphins all in one day! The underwater photos they took were stunning. Worth every penny and then some."</p><div class="review-author"><div class="review-avatar">🇮🇹</div><div><div class="review-name">Marco B.</div><div class="review-trip">Marsa Mubarak</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"The Hamata islands felt like our own private paradise. Three different reefs, incredible fish, and the most beautiful beach I've ever seen."</p><div class="review-author"><div class="review-avatar">🇵🇱</div><div><div class="review-name">Marta W.</div><div class="review-trip">Hamata Islands</div></div></div></div>
+    </div>
+  </section>
+
+  <!-- BOOK CTA -->
+  <section id="book-cta">
+    <div class="book-cta-inner">
+      <div class="sec-tag">Ready to Dive In?</div>
+      <h2 class="sec-h">Book Your <em>Adventure</em></h2>
+      <p>Fill in a simple form and we'll confirm your trip within 24 hours — no payment required now.</p>
+      <div class="cta-btns">
+        <button class="btn-book-page" onclick="BookingRouter.goToBooking()">📋 Reserve a Trip</button>
+        <a href="https://wa.me/201037420949?text=Hi!%20I%20want%20to%20book%20a%20trip" target="_blank" class="btn-wa">💬 WhatsApp Us</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section id="newsletter-section">
+    <div class="newsletter-inner">
+      <div class="newsletter-text">
+        <div class="sec-tag">Stay in the Loop</div>
+        <h2 class="newsletter-title">Get trip updates &amp; <em>secret deals</em></h2>
+        <p class="newsletter-sub">Join our list — be the first to know about new trips, seasonal offers, and Red Sea news.</p>
+      </div>
+      <div class="newsletter-form-wrap">
+        <div class="newsletter-pill" id="newsletter-pill">
+          <input class="newsletter-input" type="email" id="newsletter-email" placeholder="Your email address" autocomplete="email"/>
+          <button class="newsletter-btn" id="newsletter-btn" onclick="subscribeNewsletter()">Subscribe</button>
+        </div>
+        <div class="newsletter-feedback" id="newsletter-feedback"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+</div>
+
+<!-- ══════════ BOOKING PAGE ══════════ -->
+
+<!-- MODAL -->
+
+
+
+
+<script src="js/booking-router.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+// ── BG EMOJIS PER DESTINATION ──
+const destEmojis={
+  marsa:['🐬','🐢','🪸','🐠','🦭','🌊','🐟','⭐','🐬','🪸','🐙','🐡'],
+  luxor:['🏛️','🎈','⛵','🗿','🌅','🏺','🌙','✨','🏛️','🎈','🦅','⭐'],
+  aswan:['🚢','🗿','🏘️','🌴','⛵','🌊','🏺','✨','🚢','🌅','🦅','🌙'],
+};
+function updateBgEmojis(dest){
+  const emojis=destEmojis[dest]||destEmojis.marsa;
+  document.querySelectorAll('.bg-emoji').forEach((s,i)=>{ s.textContent=emojis[i%emojis.length]; });
+}
+// Extend switchDestHero to also update bg emojis
+const _origSwitchDestHero=switchDestHero;
+window.switchDestHero=function(dest,el){
+  _origSwitchDestHero(dest,el);
+  updateBgEmojis(dest);
+};
+
+function toggleLang(){
+  const isAr = document.documentElement.lang === 'ar';
+  document.documentElement.lang = isAr ? 'en' : 'ar';
+  document.documentElement.dir = isAr ? 'ltr' : 'rtl';
+  const label = isAr ? '🌐 العربية' : '🌐 English';
+  const b1 = document.getElementById('lang-toggle');
+  const b2 = document.getElementById('nav-lang-btn');
+  if(b1) b1.textContent = label;
+  if(b2) b2.textContent = label;
+}
+window.toggleLang = toggleLang;
+</script>
+<div id="footer-component"></div><div id="whatsapp-component"></div><script src="js/componentLoader.js"></script></body>
+</html>

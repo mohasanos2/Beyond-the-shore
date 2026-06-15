@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: https: blob:; font-src https://fonts.gstatic.com; connect-src 'self'; frame-ancestors 'none';">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>About Us — Beyond The Shore</title>
+<meta name="description" content="Meet Mohamed Hassan — underwater photographer, licensed snorkel guide, and the person behind Beyond The Shore. Discover why Marsa Alam is the Red Sea's best-kept secret."/>
+<meta name="theme-color" content="#0797A8"/>
+<link rel="icon" type="image/x-icon" href="images/favicon.ico"/>
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://mohasanos2.github.io/Beyond-the-shore/about.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="About Us — Beyond The Shore"/>
+<meta property="og:description" content="Meet the person behind Beyond The Shore — local expert, underwater photographer, and your guide to Marsa Alam's hidden wonders."/>
+<meta property="og:image" content="https://mohasanos2.github.io/Beyond-the-shore/images/logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.about-hero {
+  padding: 7rem 1.5rem 4rem;
+  max-width: 820px;
+  margin: 0 auto;
+}
+.about-hero-tag {
+  display: inline-block;
+  font-family: Outfit, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal, #0797A8);
+  border: 1.5px solid var(--teal, #0797A8);
+  border-radius: 50px;
+  padding: 0.3rem 0.9rem;
+  margin-bottom: 1.2rem;
+}
+.about-hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 6vw, 3.6rem);
+  font-weight: 600;
+  color: var(--ink, #1a1a2e);
+  line-height: 1.15;
+  margin-bottom: 1.5rem;
+}
+.about-hero h1 em { font-style: italic; color: var(--teal, #0797A8); }
+.about-lead {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  font-weight: 300;
+  color: var(--ink-mid, #555);
+  line-height: 1.7;
+  margin-bottom: 3rem;
+  max-width: 680px;
+}
+
+.about-body {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem;
+}
+.about-section {
+  margin-bottom: 3.5rem;
+}
+.about-section-label {
+  font-family: Outfit, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal, #0797A8);
+  margin-bottom: 1rem;
+}
+.about-section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: var(--ink, #1a1a2e);
+  margin-bottom: 1rem;
+  line-height: 1.25;
+}
+.about-section h2 em { font-style: italic; }
+.about-section p {
+  font-family: Outfit, sans-serif;
+  font-size: 0.95rem;
+  color: var(--ink-mid, #555);
+  line-height: 1.85;
+  margin-bottom: 1rem;
+}
+
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 3rem 0;
+}
+.about-stat {
+  background: var(--surface, #f5f5f3);
+  border-radius: 14px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+.about-stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--teal, #0797A8);
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+.about-stat-label {
+  font-family: Outfit, sans-serif;
+  font-size: 0.78rem;
+  color: var(--ink-mid, #888);
+  line-height: 1.4;
+}
+
+.about-values {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.about-value {
+  border: 1px solid var(--border, #e0e0e0);
+  border-radius: 14px;
+  padding: 1.25rem;
+  background: #fff;
+}
+.about-value-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.about-value h3 {
+  font-family: Outfit, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink, #1a1a2e);
+  margin-bottom: 0.35rem;
+}
+.about-value p {
+  font-family: Outfit, sans-serif;
+  font-size: 0.82rem;
+  color: var(--ink-mid, #888);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.about-cta {
+  background: var(--teal, #0797A8);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  margin-top: 3rem;
+}
+.about-cta h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.about-cta p {
+  font-family: Outfit, sans-serif;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 1.5rem;
+}
+.about-cta-btns { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+.about-cta a {
+  display: inline-block;
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
+  font-family: Outfit, sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.about-cta a:hover { opacity: 0.85; }
+.about-cta-primary { background: #fff; color: var(--teal, #0797A8); }
+.about-cta-secondary { background: rgba(255,255,255,0.15); color: #fff; border: 1.5px solid rgba(255,255,255,0.4); }
+
+@media(max-width:580px){
+  .about-stats { grid-template-columns: repeat(3,1fr); gap:0.6rem; }
+  .about-stat-num { font-size: 1.8rem; }
+  .about-values { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-emojis" id="bg-emojis">
+  <span class="bg-emoji">🐬</span>
+  <span class="bg-emoji">🐢</span>
+  <span class="bg-emoji">🪸</span>
+  <span class="bg-emoji">🐠</span>
+  <span class="bg-emoji">🦭</span>
+  <span class="bg-emoji">🌊</span>
+  <span class="bg-emoji">🐟</span>
+  <span class="bg-emoji">⭐</span>
+  <span class="bg-emoji">🐬</span>
+  <span class="bg-emoji">🪸</span>
+  <span class="bg-emoji">🐙</span>
+  <span class="bg-emoji">🐡</span>
+</div>
+
+<div id="navbar-component"></div>
+
+<!-- HERO -->
+<div class="about-hero">
+  <div class="about-hero-tag">Our Story</div>
+  <h1>Born in Luxor.<br>Built for the <em>Red Sea.</em></h1>
+  <p class="about-lead">Beyond The Shore started with a simple belief — that Marsa Alam is one of the most magical places on Earth, and not enough people know it exists.</p>
+</div>
+
+<!-- BODY -->
+<div class="about-body">
+
+  <!-- Stats -->
+  <div class="about-stats">
+    <div class="about-stat">
+      <div class="about-stat-num">5+</div>
+      <div class="about-stat-label">Years in Marsa Alam</div>
+    </div>
+    <div class="about-stat">
+      <div class="about-stat-num">6+</div>
+      <div class="about-stat-label">Years Underwater Photography</div>
+    </div>
+    <div class="about-stat">
+      <div class="about-stat-num">★5</div>
+      <div class="about-stat-label">Average Guest Rating</div>
+    </div>
+  </div>
+
+  <!-- Story -->
+  <div class="about-section">
+    <div class="about-section-label">The Story</div>
+    <h2>From the temples of Luxor<br>to the <em>reefs of Marsa Alam</em></h2>
+    <p>My name is Mohamed Hassan. I grew up in Luxor — a city that lives and breathes tourism — so understanding what makes a travel experience truly unforgettable has been part of my life since childhood.</p>
+    <p>More than five years ago I came to Marsa Alam, started working as an underwater photographer on snorkeling and diving trips, and never left. I earned my licensed snorkel guide certification here, and spent years documenting the reefs, the dolphins, the dugongs, and every hidden corner of this coastline through my lens.</p>
+    <p>Most visitors to Egypt head straight to Cairo, Luxor, Aswan — or if they want the sea, Sharm El Sheikh or Hurghada. Marsa Alam stays off the radar. That's exactly what makes it special — and exactly why I built Beyond The Shore. This place deserves to be seen by the world.</p>
+  </div>
+
+  <!-- Why Marsa Alam -->
+  <div class="about-section">
+    <div class="about-section-label">Why Here</div>
+    <h2>The Red Sea's <em>best-kept secret</em></h2>
+    <p>Marsa Alam offers experiences you simply cannot find anywhere else in Egypt. Wild dolphins at Sataya. Dugongs at Abu Dabbab. Three uninhabited islands at Hamata. Sea turtles that greet you at the surface. The reefs here are pristine, the water is clear year-round, and the groups are small.</p>
+    <p>My background in photography means I know every reef, every current, and exactly where to be at the right moment — so your experience isn't just a trip, it's something you'll want to remember forever.</p>
+  </div>
+
+  <!-- Values -->
+  <div class="about-section">
+    <div class="about-section-label">How We Work</div>
+    <h2>What you can <em>always expect</em></h2>
+    <div class="about-values">
+      <div class="about-value">
+        <div class="about-value-icon">📸</div>
+        <h3>Professional Photography</h3>
+        <p>Underwater shots of your experience included — real memories, not just a souvenir.</p>
+      </div>
+      <div class="about-value">
+        <div class="about-value-icon">🧭</div>
+        <h3>Local Expert Knowledge</h3>
+        <p>Every reef, every season, every secret spot — known from years of working this coastline daily.</p>
+      </div>
+      <div class="about-value">
+        <div class="about-value-icon">🛡️</div>
+        <h3>Safety & Certification</h3>
+        <p>Licensed snorkel guide, full equipment, and Marine Police coordination on every trip.</p>
+      </div>
+      <div class="about-value">
+        <div class="about-value-icon">👥</div>
+        <h3>Small, Personal Groups</h3>
+        <p>No crowds. Intimate group sizes so every guest gets real attention and a personal experience.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="about-cta">
+    <h2>Ready to see it for yourself?</h2>
+    <p>No payment required — just fill in a quick form and we'll confirm within 24 hours.</p>
+    <div class="about-cta-btns">
+      <a href="booking-dest.html" class="about-cta-primary">📋 Book a Trip</a>
+      <a href="https://wa.me/201037420949" target="_blank" class="about-cta-secondary">💬 WhatsApp Us</a>
+    </div>
+  </div>
+
+</div>
+
+<div id="footer-component"></div>
+<div id="whatsapp-component"></div>
+<script src="js/componentLoader.js"></script>
+</body>
+</html>

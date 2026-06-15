@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: https: blob:; font-src https://fonts.gstatic.com; connect-src 'self' https://bgkwvyjyjorzwtuircmf.supabase.co https://beyond-the-shore-api.onrender.com; frame-ancestors 'none';">
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Choose Your Destination — Beyond The Shore</title>
+<meta name="robots" content="noindex"/>
+<link rel="canonical" href="https://mohasanos2.github.io/Beyond-the-shore/booking-dest.html"/>
+<link rel="icon" type="image/x-icon" href="images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.dest-page{
+  min-height:100vh;
+  background:var(--cream,#FAFAF7);
+  display:flex;flex-direction:column;
+  align-items:center;
+  padding:5rem 1.5rem 3rem;
+}
+.dest-eyebrow{
+  font-family:Outfit,sans-serif;font-size:0.8rem;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:1rem;
+}
+.dest-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,6vw,3.2rem);
+  font-weight:300;color:var(--ink,#1a1a2e);
+  text-align:center;margin-bottom:0.75rem;line-height:1.2;
+}
+.dest-sub{
+  font-family:Outfit,sans-serif;font-size:1rem;
+  color:var(--ink-mid,#666);text-align:center;
+  max-width:480px;margin-bottom:3rem;line-height:1.6;
+}
+.dest-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1.5rem;width:100%;max-width:900px;
+}
+.dest-card{
+  background:#fff;border-radius:20px;
+  border:1.5px solid var(--border,#e8e8e8);
+  padding:2rem 1.5rem;
+  display:flex;flex-direction:column;align-items:center;
+  gap:1rem;cursor:pointer;
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+  text-decoration:none;
+}
+.dest-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--teal);
+  box-shadow:0 8px 32px rgba(7,151,168,0.15);
+}
+.dest-card-emoji{font-size:3rem;line-height:1;}
+.dest-card-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;font-weight:600;
+  color:var(--ink,#1a1a2e);
+}
+.dest-card-desc{
+  font-family:Outfit,sans-serif;font-size:0.85rem;
+  color:var(--ink-mid,#666);text-align:center;line-height:1.5;
+}
+.dest-card-count{
+  font-family:Outfit,sans-serif;font-size:0.75rem;
+  color:var(--teal);font-weight:600;
+  background:rgba(7,151,168,0.08);
+  padding:0.25rem 0.75rem;border-radius:50px;
+}
+.dest-card-arrow{
+  font-size:1.2rem;color:var(--teal);
+  margin-top:auto;
+}
+</style>
+</head>
+<body>
+<div id="navbar-component"></div>
+
+<div class="dest-page">
+  <div class="dest-eyebrow">✦ Where do you want to go?</div>
+  <h1 class="dest-title">Choose Your<br/><em>Destination</em></h1>
+  <p class="dest-sub">Select a destination to explore available trips and start your booking.</p>
+
+  <div class="dest-grid" id="dest-grid">
+    <a class="dest-card" href="booking.html?dest=marsa" onclick="localStorage.setItem('bts_dest','marsa')">
+      <div class="dest-card-emoji">🌊</div>
+      <div class="dest-card-name">Marsa Alam</div>
+      <div class="dest-card-desc">Dolphins, dugongs, sea turtles and the most pristine coral reefs in the Red Sea.</div>
+      <div class="dest-card-count" id="count-marsa">Loading…</div>
+      <div class="dest-card-arrow">→</div>
+    </a>
+    <a class="dest-card" href="booking.html?dest=luxor" onclick="localStorage.setItem('bts_dest','luxor')">
+      <div class="dest-card-emoji">🏛️</div>
+      <div class="dest-card-name">Luxor</div>
+      <div class="dest-card-desc">Hot air balloons, ancient temples, Nile feluccas and timeless Pharaonic wonders.</div>
+      <div class="dest-card-count" id="count-luxor">Loading…</div>
+      <div class="dest-card-arrow">→</div>
+    </a>
+    <a class="dest-card" href="booking.html?dest=aswan" onclick="localStorage.setItem('bts_dest','aswan')">
+      <div class="dest-card-emoji">🏺</div>
+      <div class="dest-card-name">Aswan</div>
+      <div class="dest-card-desc">Nile cruises, Nubian villages, Abu Simbel and the magical gateway to Upper Egypt.</div>
+      <div class="dest-card-count" id="count-aswan">Loading…</div>
+      <div class="dest-card-arrow">→</div>
+    </a>
+  </div>
+</div>
+
+<div id="footer-component"></div>
+<!-- data.js replaced by api.js -->
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/componentLoader.js"></script>
+<script>
+(async () => {
+  await initTripsData();
+  const counts = {
+    marsa: (allTrips.marsa||[]).length,
+    luxor: (allTrips.luxor||[]).length,
+    aswan: (allTrips.aswan||[]).length,
+  };
+  Object.entries(counts).forEach(([dest, n]) => {
+    const el = document.getElementById('count-' + dest);
+    if (el) el.textContent = n + ' trip' + (n !== 1 ? 's' : '') + ' available';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: https: blob:; font-src https://fonts.gstatic.com; connect-src 'self' https://bgkwvyjyjorzwtuircmf.supabase.co https://beyond-the-shore-api.onrender.com; frame-ancestors 'none';">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beyond The Shore — Admin</title>
+<link rel="icon" type="image/x-icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+<meta name="robots" content="noindex, nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a;
+  --border: #2a2f45; --teal: #0797A8; --teal-light: rgba(7,151,168,0.12);
+  --ink: #e8eaf0; --ink-mid: #9099b5; --ink-light: #5a6180;
+  --coral: #E05C3A; --sun: #F4A535; --green: #3DB85C;
+  --radius: 12px; --shadow: 0 2px 16px rgba(0,0,0,0.3);
+}
+body { font-family: 'DM Mono','Courier New',monospace; background:var(--bg); color:var(--ink); min-height:100vh; font-size:14px; }
+.admin-topbar { position:sticky; top:0; z-index:100; background:var(--surface); border-bottom:1px solid var(--border); padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; height:56px; }
+.admin-topbar-brand { font-size:0.9rem; font-weight:700; color:var(--teal); letter-spacing:.04em; }
+.admin-topbar-actions { display:flex; gap:0.5rem; align-items:center; }
+.admin-layout { display:grid; grid-template-columns:220px 1fr; min-height:calc(100vh - 56px); }
+@media(max-width:768px) {
+  .admin-layout { grid-template-columns:1fr; }
+  .admin-sidebar { display:none; }
+  .admin-sidebar.open { display:flex; position:fixed; inset:56px 0 0 0; z-index:99; overflow-y:auto; }
+  .admin-main { padding:1rem; }
+  .sidebar-overlay { display:block; }
+  .trips-admin-grid { grid-template-columns:1fr !important; }
+  .stats-grid { grid-template-columns:repeat(2,1fr) !important; }
+  .stat-card[style*="span 2"] { grid-column:span 2 !important; }
+  .bookings-toolbar { flex-direction:column; align-items:stretch !important; }
+  .bookings-toolbar input, .bookings-toolbar select { width:100%; }
+  .modal-box { padding:1rem; max-height:85vh; }
+}
+.sidebar-overlay { display:none; position:fixed; inset:56px 0 0 0; z-index:98; background:rgba(0,0,0,0.5); }
+.admin-sidebar { background:var(--surface); border-right:1px solid var(--border); padding:1.5rem 0; display:flex; flex-direction:column; gap:0.25rem; }
+.sidebar-label { font-size:0.7rem; font-weight:700; color:var(--ink-light); text-transform:uppercase; letter-spacing:.1em; padding:0.75rem 1.25rem 0.4rem; }
+.sidebar-item { display:flex; align-items:center; gap:0.65rem; padding:0.6rem 1.25rem; cursor:pointer; color:var(--ink-mid); font-size:0.85rem; border-left:3px solid transparent; transition:all .15s; }
+.sidebar-item:hover { color:var(--ink); background:var(--surface2); }
+.sidebar-item.active { color:var(--teal); border-left-color:var(--teal); background:var(--teal-light); }
+.admin-main { padding:1.5rem; overflow-y:auto; }
+.admin-section { display:none; }
+.admin-section.active { display:block; }
+.page-title { font-size:1.1rem; font-weight:700; color:var(--ink); margin-bottom:1.5rem; display:flex; align-items:center; gap:0.5rem; }
+.stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+.stat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1rem; }
+.stat-card-label { font-size:0.7rem; color:var(--ink-light); text-transform:uppercase; letter-spacing:.08em; margin-bottom:0.4rem; }
+.stat-card-value { font-size:1.6rem; font-weight:700; color:var(--teal); }
+.trips-admin-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; }
+.trip-admin-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem; display:flex; flex-direction:column; gap:0.75rem; transition:border-color .2s; }
+.trip-admin-card:hover { border-color:var(--teal); }
+.trip-admin-card-header { display:flex; align-items:center; justify-content:space-between; gap:0.5rem; }
+.trip-admin-card-name { font-size:0.9rem; font-weight:600; color:var(--ink); flex:1; }
+.trip-admin-card-badge { font-size:0.7rem; padding:0.2rem 0.6rem; border-radius:50px; background:var(--teal-light); color:var(--teal); font-weight:600; }
+.trip-admin-card-meta { display:flex; flex-wrap:wrap; gap:0.4rem; }
+.trip-meta-pill { font-size:0.72rem; padding:0.2rem 0.55rem; border-radius:50px; background:var(--surface2); color:var(--ink-mid); border:1px solid var(--border); }
+.trip-admin-card-actions { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.btn { display:inline-flex; align-items:center; gap:0.4rem; padding:0.5rem 1rem; border-radius:8px; font-family:inherit; font-size:0.8rem; font-weight:600; cursor:pointer; border:none; transition:all .15s; }
+.btn-primary { background:var(--teal); color:#fff; }
+.btn-primary:hover { background:#068a99; }
+.btn-danger { background:rgba(224,92,58,0.15); color:var(--coral); border:1px solid rgba(224,92,58,0.3); }
+.btn-danger:hover { background:rgba(224,92,58,0.25); }
+.btn-ghost { background:var(--surface2); color:var(--ink-mid); border:1px solid var(--border); }
+.btn-ghost:hover { color:var(--ink); }
+.btn-sm { padding:0.35rem 0.75rem; font-size:0.75rem; }
+.modal-overlay { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; padding:1rem; }
+.modal-overlay.open { display:flex; }
+.modal-box { background:var(--surface); border:1px solid var(--border); border-radius:16px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; padding:1.5rem; display:flex; flex-direction:column; gap:1rem; }
+.modal-title { font-size:1rem; font-weight:700; color:var(--ink); display:flex; justify-content:space-between; align-items:center; }
+.modal-close { background:none; border:none; color:var(--ink-mid); font-size:1.2rem; cursor:pointer; padding:0.25rem; }
+.modal-close:hover { color:var(--ink); }
+.field-group { display:flex; flex-direction:column; gap:0.4rem; }
+.field-label { font-size:0.75rem; font-weight:600; color:var(--ink-mid); text-transform:uppercase; letter-spacing:.06em; }
+.field-input { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:0.6rem 0.9rem; color:var(--ink); font-family:inherit; font-size:0.85rem; width:100%; outline:none; transition:border .15s; }
+.field-input:focus { border-color:var(--teal); }
+.field-input::placeholder { color:var(--ink-light); }
+textarea.field-input { min-height:80px; resize:vertical; }
+.toast { position:fixed; bottom:1.5rem; right:1.5rem; z-index:999; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:0.75rem 1.25rem; font-size:0.85rem; color:var(--ink); box-shadow:var(--shadow); transform:translateY(80px); opacity:0; transition:all .3s; pointer-events:none; }
+.toast.show { transform:translateY(0); opacity:1; }
+.toast.success { border-color:var(--green); color:var(--green); }
+.toast.error { border-color:var(--coral); color:var(--coral); }
+.pin-screen { position:fixed; inset:0; z-index:500; background:var(--bg); display:flex; align-items:center; justify-content:center; }
+.pin-box { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:2rem; width:100%; max-width:340px; text-align:center; }
+.pin-title { font-size:1.1rem; font-weight:700; color:var(--ink); margin-bottom:0.5rem; }
+.pin-sub { font-size:0.8rem; color:var(--ink-mid); margin-bottom:1.5rem; }
+.pin-input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:0.75rem 1rem; color:var(--ink); font-family:inherit; font-size:1rem; text-align:center; letter-spacing:.2em; outline:none; margin-bottom:1rem; transition:border .15s; }
+.pin-input:focus { border-color:var(--teal); }
+.pin-error { font-size:0.8rem; color:var(--coral); margin-top:-0.5rem; margin-bottom:0.75rem; min-height:1rem; }
+.menu-toggle { display:none; background:none; border:none; color:var(--ink-mid); font-size:1.3rem; cursor:pointer; padding:0.25rem; }
+@media(max-width:768px) { .menu-toggle { display:block; } }
+</style>
+</head>
+<body>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+
+<!-- PIN Screen -->
+<div class="pin-screen" id="pin-screen">
+  <div class="pin-box">
+    <div class="pin-title">🔐 Admin Access</div>
+    <div class="pin-sub">Beyond The Shore Dashboard</div>
+
+    <div id="pin-security-notice" style="
+      margin-bottom:1rem;
+      padding:0.6rem 0.8rem;
+      background:rgba(224,92,58,0.12);
+      border:1px solid rgba(224,92,58,0.3);
+      border-radius:8px;
+      font-size:0.72rem;
+      color:#E05C3A;
+      line-height:1.5;
+      text-align:left;
+      display:none;
+    ">
+      ⚠️ Using default PIN. Change <code>ADMIN_PIN_HASH</code> before going live.
+    </div>
+    <input class="pin-input" id="pin-input" type="password"
+           placeholder="••••••" maxlength="30"
+           onkeydown="if(event.key==='Enter')verifyPin()"/>
+    <div class="pin-error" id="pin-error"></div>
+    <button class="btn btn-primary" style="width:100%" onclick="verifyPin()">Unlock →</button>
+  </div>
+</div>
+
+<!-- Top Bar -->
+<div class="admin-topbar">
+  <div style="display:flex;align-items:center;gap:0.75rem">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <span class="admin-topbar-brand">⚓ BTS Admin</span>
+  </div>
+  <div class="admin-topbar-actions">
+    <span id="topbar-status" style="font-size:0.75rem;color:var(--ink-light)"></span>
+    <button class="btn btn-ghost btn-sm" onclick="doLogout()">Sign Out</button>
+  </div>
+</div>
+
+<!-- Layout -->
+<div class="admin-layout">
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+  <nav class="admin-sidebar" id="admin-sidebar">
+    <div class="sidebar-label">Navigation</div>
+    <div class="sidebar-item active" onclick="showSection('analytics',this)">📊 Analytics</div>
+    <div class="sidebar-item" onclick="showSection('trips',this)">🗺️ Trips</div>
+    <div class="sidebar-item" onclick="showSection('bookings',this)">📋 Bookings</div>
+    <div class="sidebar-item" onclick="showSection('subscribers',this)">📧 Subscribers</div>
+    <div class="sidebar-item" onclick="showSection('settings',this)">⚙️ Settings</div>
+  </nav>
+
+  <main class="admin-main">
+    <!-- Analytics Section -->
+    <div class="admin-section active" id="section-analytics">
+      <div class="page-title">📊 Overview</div>
+      <div id="stats-grid" class="stats-grid">
+        <div class="stat-card"><div class="stat-card-label">Loading</div><div class="stat-card-value">…</div></div>
+        <div class="stat-card"><div class="stat-card-label">Loading</div><div class="stat-card-value">…</div></div>
+        <div class="stat-card"><div class="stat-card-label">Loading</div><div class="stat-card-value">…</div></div>
+        <div class="stat-card"><div class="stat-card-label">Loading</div><div class="stat-card-value">…</div></div>
+      </div>
+    </div>
+
+    <!-- Trips Section -->
+    <div class="admin-section" id="section-trips">
+      <div class="page-title">🗺️ Manage Trips</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-card-label">Total Trips</div><div class="stat-card-value" id="stat-total">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Marsa Alam</div><div class="stat-card-value" id="stat-marsa">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Luxor</div><div class="stat-card-value" id="stat-luxor">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Aswan</div><div class="stat-card-value" id="stat-aswan">—</div></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+        <button class="btn btn-primary" onclick="openAddTrip()">+ Add Trip</button>
+      </div>
+      <div class="trips-admin-grid" id="trips-admin-grid">
+        <div style="color:var(--ink-light);padding:2rem;grid-column:1/-1;text-align:center">Loading trips…</div>
+      </div>
+    </div>
+
+    <!-- Bookings Section -->
+    <div class="admin-section" id="section-bookings">
+      <div class="page-title">📋 Booking Requests</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem">
+        <span id="bookings-count" style="font-size:0.8rem;color:var(--ink-mid)">Loading…</span>
+        <button class="btn btn-danger btn-sm" onclick="clearBookings()">🗑 Clear All</button>
+      </div>
+      <!-- Toolbar -->
+      <div class="bookings-toolbar" style="display:flex;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center">
+        <input type="text" id="bookings-search" placeholder="🔍 Name or trip…"
+          oninput="filterBookings()"
+          style="flex:1;min-width:160px;padding:0.5rem 0.85rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--ink);font-family:inherit;font-size:0.82rem;outline:none"/>
+        <select id="bookings-filter" onchange="filterBookings()"
+          style="padding:0.5rem 0.85rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--ink);font-family:inherit;font-size:0.82rem;cursor:pointer">
+          <option value="all">All Status</option>
+          <option value="pending">⏳ Pending</option>
+          <option value="confirmed">✅ Confirmed</option>
+          <option value="cancelled">❌ Cancelled</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="exportBookingsCSV()">⬇ Export CSV</button>
+      </div>
+      <div id="bookings-list"></div>
+    </div>
+
+    <!-- Subscribers Section -->
+    <div class="admin-section" id="section-subscribers">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem">
+        <div>
+          <div class="page-title" style="margin-bottom:0.25rem">📧 Subscribers</div>
+          <p id="subscribers-count" style="font-size:0.8rem;color:var(--ink-mid);margin:0">Loading...</p>
+        </div>
+        <button class="btn btn-primary" onclick="exportSubscribersCSV()">⬇ Export CSV</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:0.85rem">
+          <thead>
+            <tr style="border-bottom:2px solid var(--border);text-align:left">
+              <th style="padding:0.5rem 1rem;color:var(--ink-mid);font-weight:600">#</th>
+              <th style="padding:0.5rem 1rem;color:var(--ink-mid);font-weight:600">Email</th>
+              <th style="padding:0.5rem 1rem;color:var(--ink-mid);font-weight:600">Date Subscribed</th>
+            </tr>
+          </thead>
+          <tbody id="subscribers-tbody">
+            <tr><td colspan="3" style="padding:2rem;text-align:center;color:var(--ink-light)">Loading subscribers...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Settings Section -->
+    <div class="admin-section" id="section-settings">
+      <div class="page-title">⚙️ Settings</div>
+      <p style="font-size:0.75rem;color:var(--ink-light);margin-top:-1rem;margin-bottom:1.5rem">Saved to Firestore · <code>config/siteSettings</code></p>
+      <div style="max-width:540px;display:flex;flex-direction:column;gap:1.1rem">
+        <div class="field-group">
+          <div class="field-label">💬 WhatsApp Number</div>
+          <input class="field-input" id="set-whatsapp" placeholder="e.g. 201037420949"/>
+        </div>
+        <div class="field-group">
+          <div class="field-label">📝 Default Booking WhatsApp Message</div>
+          <textarea class="field-input" id="set-bookingmsg" rows="3" placeholder="Hi! I'd like to book..."></textarea>
+        </div>
+        <div class="field-group">
+          <div class="field-label">📧 Newsletter Greeting Text</div>
+          <input class="field-input" id="set-newsletter" placeholder="e.g. Welcome aboard, explorer!"/>
+        </div>
+        <div class="field-group">
+          <div class="field-label">📨 Bookings Email Recipient</div>
+          <input class="field-input" type="email" id="set-email" placeholder="e.g. bookings@beyondtheshore.com"/>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <input type="checkbox" id="set-maintenance" style="width:16px;height:16px;cursor:pointer;accent-color:var(--teal)"/>
+          <label for="set-maintenance" style="font-size:0.85rem;color:var(--ink);cursor:pointer">🔧 Maintenance Mode</label>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem;margin-top:0.25rem">
+          <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+          <span id="settings-feedback" style="font-size:0.8rem;color:var(--ink-mid)"></span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="trip-modal">
+  <div class="modal-box">
+    <div class="modal-title">
+      <span id="modal-title-text">Add Trip</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="field-group"><div class="field-label">Trip ID (unique, no spaces)</div><input class="field-input" id="m-id" placeholder="e.g. sataya"/></div>
+    <div class="field-group"><div class="field-label">Trip Name</div><input class="field-input" id="m-name" placeholder="Sataya — Dolphin House"/></div>
+    <div class="field-group"><div class="field-label">Destination</div>
+      <select class="field-input" id="m-dest">
+        <option value="marsa">Marsa Alam</option>
+        <option value="luxor">Luxor</option>
+        <option value="aswan">Aswan</option>
+      </select>
+    </div>
+    <div class="field-group"><div class="field-label">Location</div><input class="field-input" id="m-loc" placeholder="Hamata, Marsa Alam"/></div>
+    <div class="field-group"><div class="field-label">Price (e.g. From $65)</div><input class="field-input" id="m-price" placeholder="From $65"/></div>
+    <div class="field-group"><div class="field-label">Badge</div><input class="field-input" id="m-badge" placeholder="⭐ Most Popular"/></div>
+    <div class="field-group"><div class="field-label">Description</div><textarea class="field-input" id="m-desc" placeholder="Trip description…"></textarea></div>
+    <div class="field-group"><div class="field-label">Image URL (optional)</div><input class="field-input" id="m-img" placeholder="https://…"/></div>
+    <div class="field-group"><div class="field-label">Duration</div><input class="field-input" id="m-duration" placeholder="e.g. Full Day (8–9 hrs)"/></div>
+    <div class="field-group"><div class="field-label">Group Size</div><input class="field-input" id="m-groupsize" placeholder="e.g. 2–8 people"/></div>
+    <div class="field-group"><div class="field-label">Meeting Point</div><input class="field-input" id="m-meetingpoint" placeholder="e.g. Hurghada Marina, Gate 3"/></div>
+    <div class="field-group"><div class="field-label">Highlights <span style="font-weight:400;text-transform:none;letter-spacing:0">(سطر لكل item)</span></div><textarea class="field-input" id="m-highlights" rows="4" placeholder="Snorkeling at Gifton Island&#10;Lunch on board&#10;Dolphin spotting"></textarea></div>
+    <div class="field-group"><div class="field-label">✅ Included <span style="font-weight:400;text-transform:none;letter-spacing:0">(سطر لكل item)</span></div><textarea class="field-input" id="m-included" rows="4" placeholder="Hotel pickup & drop-off&#10;Snorkeling equipment&#10;Lunch & soft drinks"></textarea></div>
+    <div class="field-group"><div class="field-label">❌ Not Included <span style="font-weight:400;text-transform:none;letter-spacing:0">(سطر لكل item)</span></div><textarea class="field-input" id="m-notincluded" rows="3" placeholder="Alcoholic beverages&#10;Personal expenses"></textarea></div>
+    <div class="field-group">
+      <div class="field-label">Trip Options</div>
+      <div id="trip-options-list" style="margin-top:0.3rem"></div>
+      <button type="button" onclick="addTripOption()"
+        style="margin-top:0.5rem;font-family:inherit;font-size:0.78rem;padding:0.35rem 1rem;
+               border:1px dashed var(--teal);color:var(--teal);background:transparent;border-radius:8px;cursor:pointer">
+        + Add Option
+      </button>
+    </div>
+    <div style="display:flex;gap:0.75rem;justify-content:flex-end;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTrip()">Save Trip</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// ADMIN PIN — CHANGE BEFORE DEPLOYING
+// ─────────────────────────────────────────────────────────────
+// Generate your own SHA-256 hash:
+//   1. Go to: https://emn178.github.io/online-tools/sha256.html
+//   2. Type your desired PIN
+//   3. Copy the hash and replace the value below
+//
+// ⚠️  SECURITY NOTE: Client-side PIN is obfuscated, not truly secure.
+//     For production hardening, protect /admin/ via:
+//     - Cloudflare Access (free tier): https://www.cloudflare.com/zero-trust/
+//     - Or rename admin folder to a secret path (e.g. /xk7m9admin/)
+//     - Or move admin to a private local-only file not pushed to GitHub
+// ─────────────────────────────────────────────────────────────
+const ADMIN_PIN_HASH = (function(){
+  // Default hash = SHA-256 of "changeme123" — REPLACE THIS
+  return '576e63985605143b0fa8170b6f3f97b0ba4d32c0305dc577f929b0d32f12a9f2';
+})();
+const SESSION_KEY = 'bts_admin_v';
+const TIMEOUT_MS = 30 * 60 * 1000;
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function isAuthed() {
+  const s = JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null');
+  return s && (Date.now() - s.t < TIMEOUT_MS);
+}
+async function verifyPin() {
+  const LOCK_KEY = 'bts_pin_attempts';
+  const MAX_ATTEMPTS = 5;
+  const LOCK_DURATION_MS = 15 * 60 * 1000;
+
+  const lockData = JSON.parse(sessionStorage.getItem(LOCK_KEY) || '{"count":0,"lockedAt":null}');
+  if (lockData.lockedAt) {
+    const elapsed = Date.now() - lockData.lockedAt;
+    if (elapsed < LOCK_DURATION_MS) {
+      const remaining = Math.ceil((LOCK_DURATION_MS - elapsed) / 60000);
+      document.getElementById('pin-error').textContent = `Too many attempts. Try again in ${remaining} minute${remaining !== 1 ? 's' : ''}.`;
+      return;
+    } else {
+      sessionStorage.removeItem(LOCK_KEY);
+      lockData.count = 0;
+      lockData.lockedAt = null;
+    }
+  }
+
+  const val = document.getElementById('pin-input').value;
+  if (!val) return;
+
+  try {
+    const result = await AdminAPI.login(val);
+    AdminAPI.saveSession(result.token);
+    sessionStorage.removeItem(LOCK_KEY);
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({t: Date.now()}));
+    document.getElementById('pin-screen').style.display = 'none';
+    initAdmin();
+  } catch(e) {
+    lockData.count = (lockData.count || 0) + 1;
+    const remaining = MAX_ATTEMPTS - lockData.count;
+    if (remaining <= 0) {
+      lockData.lockedAt = Date.now();
+      sessionStorage.setItem(LOCK_KEY, JSON.stringify(lockData));
+      document.getElementById('pin-error').textContent = 'Too many attempts. Locked for 15 minutes.';
+    } else {
+      sessionStorage.setItem(LOCK_KEY, JSON.stringify(lockData));
+      document.getElementById('pin-error').textContent = `Incorrect PIN. ${remaining} attempt${remaining !== 1 ? 's' : ''} remaining.`;
+    }
+    document.getElementById('pin-input').value = '';
+  }
+}
+function doLogout() { sessionStorage.removeItem(SESSION_KEY); location.reload(); }
+function initAdmin() {
+  // Show warning if still using default PIN hash
+  const DEFAULT_HASH = '576e63985605143b0fa8170b6f3f97b0ba4d32c0305dc577f929b0d32f12a9f2';
+  if (ADMIN_PIN_HASH === DEFAULT_HASH) {
+    const notice = document.getElementById('pin-security-notice');
+    if (notice) {
+      notice.style.display = 'block';
+      // Also show it in topbar
+      const ts = document.getElementById('topbar-status');
+      if (ts) ts.textContent = '⚠️ Default PIN — change before go-live';
+    }
+  }
+  document.getElementById('topbar-status').textContent = '🟢 Backend API';
+  loadAnalytics();
+  loadTripsAdmin();
+}
+function showSection(name, el) {
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+  if (name === 'bookings') loadBookings();
+  if (name === 'subscribers') loadSubscribers();
+  if (name === 'analytics') loadAnalytics();
+  if (name === 'settings') loadSettings();
+  if (window.innerWidth <= 768) closeSidebar();
+}
+function toggleSidebar() {
+  const sidebar = document.getElementById('admin-sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const isOpen = sidebar.classList.toggle('open');
+  if (overlay) overlay.style.display = isOpen ? 'block' : 'none';
+}
+function closeSidebar() {
+  document.getElementById('admin-sidebar').classList.remove('open');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+async function loadTripsAdmin() {
+  await initTripsData();
+  const all = [...(allTrips.marsa||[]), ...(allTrips.luxor||[]), ...(allTrips.aswan||[])];
+  document.getElementById('stat-total').textContent = all.length;
+  document.getElementById('stat-marsa').textContent = (allTrips.marsa||[]).length;
+  document.getElementById('stat-luxor').textContent = (allTrips.luxor||[]).length;
+  document.getElementById('stat-aswan').textContent = (allTrips.aswan||[]).length;
+  renderAdminTrips(all);
+}
+function renderAdminTrips(trips) {
+  const grid = document.getElementById('trips-admin-grid');
+  if (!trips.length) { grid.innerHTML = '<div style="color:var(--ink-light);padding:2rem;text-align:center">No trips found.</div>'; return; }
+  grid.innerHTML = trips.map(t => `
+    <div class="trip-admin-card">
+      <div class="trip-admin-card-header">
+        <div class="trip-admin-card-name">${escA(t.icon)||''} ${escA(t.name)}</div>
+        <div class="trip-admin-card-badge">${escA(t.destination)||'—'}</div>
+      </div>
+      <div class="trip-admin-card-meta">
+        <span class="trip-meta-pill">📍 ${escA(t.loc)||'—'}</span>
+        <span class="trip-meta-pill">💰 ${escA(t.price)||'—'}</span>
+      </div>
+      <div class="trip-admin-card-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editTrip('${escA(t.id)}')">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteTrip('${escA(t.id)}')">🗑 Delete</button>
+      </div>
+    </div>`).join('');
+}
+let editingId = null;
+function openAddTrip() {
+  editingId = null;
+  document.getElementById('modal-title-text').textContent = 'Add Trip';
+  ['id','name','loc','price','badge','desc','img','duration','groupsize','meetingpoint','highlights','included','notincluded']
+    .forEach(f => { const el = document.getElementById('m-'+f); if(el) el.value = ''; });
+  document.getElementById('m-id').disabled = false;
+  setTripOptions([]);
+  document.getElementById('trip-modal').classList.add('open');
+}
+function editTrip(id) {
+  const all = [...(allTrips.marsa||[]), ...(allTrips.luxor||[]), ...(allTrips.aswan||[])];
+  const t = all.find(x => x.id === id);
+  if (!t) return;
+  editingId = id;
+  document.getElementById('modal-title-text').textContent = 'Edit Trip';
+  document.getElementById('m-id').value = t.id; document.getElementById('m-id').disabled = true;
+  document.getElementById('m-name').value = t.name||'';
+  document.getElementById('m-dest').value = t.destination||'marsa';
+  document.getElementById('m-loc').value = t.loc||'';
+  document.getElementById('m-price').value = t.price||'';
+  document.getElementById('m-badge').value = t.badge||'';
+  document.getElementById('m-desc').value = t.desc||'';
+  document.getElementById('m-img').value = t.imageUrl||'';
+  document.getElementById('m-duration').value = t.duration||'';
+  document.getElementById('m-groupsize').value = t.groupSize||'';
+  document.getElementById('m-meetingpoint').value = t.meetingPoint||'';
+  document.getElementById('m-highlights').value = (t.highlights||[]).join('\n');
+  document.getElementById('m-included').value = (t.included||[]).join('\n');
+  document.getElementById('m-notincluded').value = (t.notIncluded||[]).join('\n');
+  setTripOptions(t.options||[]);
+  document.getElementById('trip-modal').classList.add('open');
+}
+function closeModal() { document.getElementById('trip-modal').classList.remove('open'); }
+async function saveTrip() {
+  const id = editingId || document.getElementById('m-id').value.trim().replace(/\s+/g,'-');
+  if (!id) { showToast('Trip ID is required', 'error'); return; }
+  const data = {
+    id, name: document.getElementById('m-name').value.trim(),
+    destination: document.getElementById('m-dest').value,
+    loc: document.getElementById('m-loc').value.trim(),
+    price: document.getElementById('m-price').value.trim(),
+    badge: document.getElementById('m-badge').value.trim(),
+    desc: document.getElementById('m-desc').value.trim(),
+    imageUrl: document.getElementById('m-img').value.trim()||null,
+    duration:     document.getElementById('m-duration').value.trim(),
+    groupSize:    document.getElementById('m-groupsize').value.trim(),
+    meetingPoint: document.getElementById('m-meetingpoint').value.trim(),
+    highlights:   document.getElementById('m-highlights').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    included:     document.getElementById('m-included').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    notIncluded:  document.getElementById('m-notincluded').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    options:      getTripOptions(),
+  };
+  try {
+    await AdminAPI.updateTrip(id, data);
+    showToast('✅ Trip saved', 'success');
+  } catch(e) {
+    showToast('❌ Save failed: ' + e.message, 'error');
+  }
+  closeModal();
+  loadTripsAdmin();
+}
+async function deleteTrip(id) {
+  if (!confirm('Delete "' + id + '"?')) return;
+  try {
+    await AdminAPI.deleteTrip(id);
+    showToast('🗑 Deleted', 'success');
+  } catch(e) {
+    showToast('❌ Delete failed: ' + e.message, 'error');
+  }
+  loadTripsAdmin();
+}
+// ── Analytics ──
+async function loadAnalytics() {
+  const grid = document.getElementById('stats-grid');
+  if (!grid) return;
+  try {
+    const [bookings, trips, subs] = await Promise.all([
+      AdminAPI.getBookings(),
+      TripsAPI.getAll(),
+      AdminAPI.getSubscribers()
+    ]);
+    let total=bookings.length, confirmed=0, pending=0;
+    const tripCount = {};
+    bookings.forEach(b => {
+      const st = (b.status||'pending').toLowerCase();
+      if (st === 'confirmed') confirmed++; else if (st === 'pending') pending++;
+      const tn = b.trips?.name || b.trip_id || '';
+      if (tn) tripCount[tn] = (tripCount[tn]||0) + 1;
+    });
+    const top = Object.entries(tripCount).sort((a,b)=>b[1]-a[1])[0];
+    const topLabel = top ? top[0] : '—';
+    const cards = [
+      { icon:'📋', label:'Total Bookings', value: total,        color:'var(--teal)' },
+      { icon:'✅', label:'Confirmed',      value: confirmed,    color:'var(--green)' },
+      { icon:'⏳', label:'Pending',        value: pending,      color:'var(--sun)' },
+      { icon:'🌊', label:'Active Trips',   value: trips.length, color:'var(--teal)' },
+      { icon:'📧', label:'Subscribers',    value: subs.length,  color:'#7c5cbf' },
+      { icon:'🏆', label:'Top Trip',       value: topLabel,     color:'var(--coral)', wide:true },
+    ];
+    grid.innerHTML = cards.map(c =>
+      `<div class="stat-card" style="${c.wide?'grid-column:span 2;':''}" >
+        <div style="font-size:1.4rem;margin-bottom:0.3rem">${c.icon}</div>
+        <div class="stat-card-label">${c.label}</div>
+        <div class="stat-card-value" style="color:${c.color};font-size:${typeof c.value==='string'&&c.value.length>10?'1rem':'1.6rem'}">${escA(String(c.value))}</div>
+      </div>`).join('');
+  } catch(e) {
+    if(grid) grid.innerHTML = `<div style="color:var(--coral);padding:1rem;font-size:0.85rem">Error loading analytics: ${escA(e.message)}</div>`;
+  }
+}
+
+// ── Subscribers ──
+async function loadSubscribers() {
+  const tbody = document.getElementById('subscribers-tbody');
+  const countEl = document.getElementById('subscribers-count');
+  if (!tbody) return;
+  try {
+    const subs = await AdminAPI.getSubscribers();
+    window._subscribersCache = subs;
+    if (countEl) countEl.textContent = subs.length + ' total subscriber' + (subs.length !== 1 ? 's' : '');
+    if (!subs.length) {
+      tbody.innerHTML = '<tr><td colspan="3" style="padding:2rem;text-align:center;color:var(--ink-light)">No subscribers yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = subs.map((s, i) => {
+      let date = '—';
+      try { date = new Date(s.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); } catch(e) {}
+      return `<tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:0.6rem 1rem;color:var(--ink-light)">${i+1}</td>
+        <td style="padding:0.6rem 1rem;color:var(--ink);font-weight:500">${escA(s.email)}</td>
+        <td style="padding:0.6rem 1rem;color:var(--ink-mid)">${escA(date)}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="3" style="padding:2rem;text-align:center;color:var(--coral);font-size:0.82rem">Error: ${escA(e.message)}</td></tr>`;
+  }
+}
+
+function exportSubscribersCSV() {
+  const subs = window._subscribersCache || [];
+  if (!subs.length) { showToast('No subscribers to export', 'error'); return; }
+  const rows = [['#','Email','Date Subscribed'], ...subs.map((s,i) => {
+    let date = '';
+    try { const r = s.subscribedAt; date = r?.toDate ? r.toDate().toLocaleDateString('en-GB') : r ? new Date(r).toLocaleDateString('en-GB') : ''; } catch(e){}
+    return [i+1, s.email||s.id, date];
+  })];
+  const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})), download: 'subscribers_' + new Date().toISOString().slice(0,10) + '.csv' });
+  a.click();
+}
+
+// ── Trip Options ──
+function addTripOption(label, price) {
+  label = label || ''; price = price || '';
+  const list = document.getElementById('trip-options-list');
+  if (!list) return;
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:0.5rem;margin-bottom:0.4rem;align-items:center';
+  row.innerHTML =
+    '<input type="text" placeholder="Label (e.g. Private Boat)" value="' + escA(label) + '"' +
+    '  class="option-label field-input" style="flex:2;padding:0.45rem 0.7rem"/>' +
+    '<input type="number" placeholder="Price $" value="' + escA(String(price)) + '"' +
+    '  class="option-price field-input" style="flex:1;padding:0.45rem 0.7rem"/>' +
+    '<button type="button" onclick="this.parentElement.remove()"' +
+    '  style="background:none;border:none;color:var(--coral);cursor:pointer;font-size:1rem;padding:0 0.25rem">✕</button>';
+  list.appendChild(row);
+}
+function getTripOptions() {
+  return Array.from(document.querySelectorAll('#trip-options-list > div')).map(row => ({
+    label: row.querySelector('.option-label').value.trim(),
+    price: parseFloat(row.querySelector('.option-price').value) || 0
+  })).filter(o => o.label);
+}
+function setTripOptions(options) {
+  const list = document.getElementById('trip-options-list');
+  if (list) list.innerHTML = '';
+  (options || []).forEach(o => addTripOption(o.label, o.price));
+}
+
+// ── XSS Protection ──
+// Short alias used in admin trip card templates
+function escA(s) {
+  if (s === null || s === undefined) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+function escapeHTML(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ── Settings ──
+async function loadSettings() {
+  try {
+    const rows = await AdminAPI.adminFetch('/api/admin/settings');
+    const map = {};
+    (rows || []).forEach(r => { map[r.key] = r.value; });
+    const set = (id, val) => { const el=document.getElementById(id); if(el) el.value = val||''; };
+    set('set-whatsapp',   map.whatsappNumber);
+    set('set-bookingmsg', map.defaultBookingMsg);
+    set('set-newsletter', map.newsletterGreeting);
+    set('set-email',      map.bookingsEmail);
+    const m = document.getElementById('set-maintenance');
+    if (m) m.checked = map.maintenanceMode === 'true';
+  } catch(e) { console.error('loadSettings:', e); }
+}
+
+async function saveSettings() {
+  const fb = document.getElementById('settings-feedback');
+  if (fb) { fb.textContent = 'Saving…'; fb.style.color = 'var(--ink-mid)'; }
+  const get = id => { const el=document.getElementById(id); return el?el.value.trim():''; };
+  const m = document.getElementById('set-maintenance');
+  const settings = {
+    whatsappNumber:     get('set-whatsapp'),
+    defaultBookingMsg:  get('set-bookingmsg'),
+    newsletterGreeting: get('set-newsletter'),
+    bookingsEmail:      get('set-email'),
+    maintenanceMode:    m ? String(m.checked) : 'false',
+  };
+  try {
+    await Promise.all(
+      Object.entries(settings).map(([key, value]) =>
+        AdminAPI.adminFetch('/api/admin/settings', {
+          method: 'POST',
+          body: JSON.stringify({ key, value })
+        })
+      )
+    );
+    if (fb) { fb.textContent = '✅ Saved'; fb.style.color = 'var(--green)'; setTimeout(()=>{ fb.textContent=''; },3000); }
+    showToast('✅ Settings saved', 'success');
+  } catch(e) {
+    if (fb) { fb.textContent = '❌ ' + e.message; fb.style.color = 'var(--coral)'; }
+    showToast('❌ Save failed', 'error');
+  }
+}
+
+// ── Booking Status ──
+const STATUS_COLORS = {
+  'Pending':   { bg: 'rgba(244,165,53,0.15)',  color: '#F4A535' },
+  'Confirmed': { bg: 'rgba(61,184,92,0.15)',   color: '#3DB85C' },
+  'Cancelled': { bg: 'rgba(224,92,58,0.15)',   color: '#E05C3A' }
+};
+
+async function updateBookingStatus(bookingId, newStatus, source) {
+  if (source === 'api') {
+    try {
+      await AdminAPI.updateBooking(bookingId, { status: newStatus });
+    } catch(e) {
+      showToast('❌ Firestore update failed: ' + e.message, 'error');
+      return;
+    }
+  }
+  if (source === 'local' || source === 'both') {
+    const local = JSON.parse(localStorage.getItem('bts_bookings') || '[]');
+    const idx = local.findIndex(b => b.id === bookingId);
+    if (idx !== -1) { local[idx].status = newStatus; localStorage.setItem('bts_bookings', JSON.stringify(local)); }
+  }
+  // Update badge in DOM immediately
+  const card = document.querySelector('[data-booking-id="' + bookingId + '"]');
+  if (card) {
+    const badge = card.querySelector('.booking-status-badge');
+    if (badge) {
+      badge.textContent = newStatus;
+      const sc = STATUS_COLORS[newStatus] || { bg: 'rgba(136,136,136,0.15)', color: '#888' };
+      badge.style.background = sc.bg;
+      badge.style.color = sc.color;
+    }
+  }
+  showToast('✅ Status updated: ' + newStatus, 'success');
+  // Sync status to localStorage bts_my_bookings (user-facing)
+  try {
+    const myB = JSON.parse(localStorage.getItem('bts_my_bookings') || '[]');
+    const updated = myB.map(function(b) {
+      if (b.firestoreId && b.firestoreId === bookingId) {
+        return Object.assign({}, b, { status: newStatus });
+      }
+      return b;
+    });
+    localStorage.setItem('bts_my_bookings', JSON.stringify(updated));
+  } catch(_e) {}
+}
+
+// ── Bookings ──
+function renderBookingsList(bookings) {
+  const list = document.getElementById('bookings-list');
+  const count = document.getElementById('bookings-count');
+  if (!list) return;
+  if (!bookings.length) {
+    count.textContent = 'No bookings yet.';
+    list.innerHTML = '<div style="color:var(--ink-light);padding:2rem;text-align:center">No booking requests received yet.</div>';
+    return;
+  }
+  count.textContent = bookings.length + ' booking request' + (bookings.length !== 1 ? 's' : '');
+  list.innerHTML = bookings.map(b => {
+    const status = b.status || 'Pending';
+    const sc = STATUS_COLORS[status] || STATUS_COLORS['Pending'];
+    const src = b._source || 'firestore';
+    const bid = escA(b._docId || b.id || '');
+    return `
+    <div data-booking-id="${bid}" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+                padding:1.25rem;margin-bottom:0.75rem;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem">
+        <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap">
+          <div style="font-weight:700;color:var(--ink);font-size:0.9rem">${escA(b.from_name)||'—'}</div>
+          <span class="booking-status-badge" style="font-size:0.72rem;font-weight:600;padding:0.2rem 0.7rem;border-radius:50px;background:${sc.bg};color:${sc.color}">${escA(status)}</span>
+        </div>
+        <div style="font-size:0.72rem;color:var(--ink-light)">${b.timestamp ? new Date(b.timestamp).toLocaleString() : '—'}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.5rem">
+        ${[
+          ['Trip',        escA(b.trip_name)],
+          ['Date',        escA(b.trip_date)],
+          ['Guests',      escA(String(b.adults||0)) + ' adults, ' + escA(String(b.children||0)) + ' children'],
+          ['Option',      escA(b.option)],
+          ['Contact',     escA(b.contact_method)],
+          ['WhatsApp',    escA(b.whatsapp)],
+          ['Email',       escA(b.email)],
+          ['Nationality', escA(b.nationality)],
+        ].map(([k,v]) => v && v !== 'N/A' && v !== '—' && v !== 'None' ? `
+          <div style="background:var(--surface2);border-radius:8px;padding:0.5rem 0.75rem">
+            <div style="font-size:0.68rem;color:var(--ink-light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:0.2rem">${k}</div>
+            <div style="font-size:0.82rem;color:var(--ink)">${v}</div>
+          </div>` : '').join('')}
+      </div>
+      ${b.notes && b.notes !== 'None' && b.notes !== '—' ? `
+        <div style="margin-top:0.75rem;padding:0.6rem 0.75rem;background:var(--surface2);border-radius:8px;font-size:0.82rem;color:var(--ink-mid)">
+          📝 ${escA(b.notes)}
+        </div>` : ''}
+      <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center">
+        ${b.email && b.email !== 'N/A' ? `
+          <a href="mailto:${escA(b.email)}?subject=Re: Your booking — ${escA(b.trip_name)}"
+             style="font-size:0.75rem;padding:0.35rem 0.8rem;border-radius:6px;background:var(--teal-light);color:var(--teal);font-weight:600;text-decoration:none">
+            ✉️ Email Client
+          </a>` : ''}
+        ${b.whatsapp && b.whatsapp !== 'N/A' ? `
+          <a href="https://wa.me/${escA(b.whatsapp.replace(/[^0-9]/g,''))}" target="_blank"
+             style="font-size:0.75rem;padding:0.35rem 0.8rem;border-radius:6px;background:rgba(37,211,102,0.1);color:#25D366;font-weight:600;text-decoration:none">
+            💬 WhatsApp
+          </a>` : ''}
+        ${bid ? `
+        <div style="margin-left:auto;display:flex;gap:0.4rem;flex-wrap:wrap">
+          <button onclick="updateBookingStatus('${bid}','Confirmed','${src}')"
+            style="font-size:0.72rem;padding:0.25rem 0.65rem;border-radius:50px;border:1px solid #3DB85C;color:#3DB85C;background:transparent;cursor:pointer;font-family:inherit">
+            ✅ Confirm
+          </button>
+          <button onclick="updateBookingStatus('${bid}','Pending','${src}')"
+            style="font-size:0.72rem;padding:0.25rem 0.65rem;border-radius:50px;border:1px solid #F4A535;color:#F4A535;background:transparent;cursor:pointer;font-family:inherit">
+            🔄 Pending
+          </button>
+          <button onclick="updateBookingStatus('${bid}','Cancelled','${src}')"
+            style="font-size:0.72rem;padding:0.25rem 0.65rem;border-radius:50px;border:1px solid #E05C3A;color:#E05C3A;background:transparent;cursor:pointer;font-family:inherit">
+            ❌ Cancel
+          </button>
+        </div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function loadBookings() {
+  const list = document.getElementById('bookings-list');
+  const count = document.getElementById('bookings-count');
+  if (!list) return;
+
+  list.innerHTML = '<div style="color:var(--ink-light);padding:2rem;text-align:center">Loading bookings…</div>';
+  count.textContent = 'Loading…';
+
+  let bookings = [];
+
+  // Primary: Backend API
+  try {
+    const apiBookings = await AdminAPI.getBookings();
+    bookings = apiBookings.map(b => ({
+      _docId:         b.id,
+      _source:        'api',
+      from_name:      b.contact_name   || '—',
+      trip_name:      b.trips?.name    || b.trip_id || '—',
+      trip_date:      b.date           || '—',
+      adults:         b.guests_adults  || 0,
+      children:       b.guests_children || 0,
+      option:         '—',
+      contact_method: b.contact_method || '—',
+      whatsapp:       b.contact_phone  || 'N/A',
+      email:          b.contact_email  || 'N/A',
+      nationality:    '—',
+      notes:          b.special_requests || '—',
+      status:         b.status         || 'pending',
+      admin_notes:    b.admin_notes    || '',
+      timestamp:      b.created_at     || null,
+    }));
+    console.info('[Admin] Loaded', bookings.length, 'bookings from API.');
+  } catch(e) {
+    console.warn('[Admin] API load failed:', e);
+    bookings = [];
+  }
+
+  window._allBookings = bookings;
+  renderBookingsList(bookings);
+}
+
+function filterBookings() {
+  const q = (document.getElementById('bookings-search')?.value||'').toLowerCase().trim();
+  const f = (document.getElementById('bookings-filter')?.value||'all').toLowerCase();
+  const filtered = (window._allBookings||[]).filter(b => {
+    const matchStatus = f === 'all' || (b.status||'pending').toLowerCase() === f;
+    const matchSearch = !q ||
+      (b.from_name||'').toLowerCase().includes(q) ||
+      (b.trip_name||'').toLowerCase().includes(q);
+    return matchStatus && matchSearch;
+  });
+  renderBookingsList(filtered);
+}
+
+function exportBookingsCSV() {
+  const q = (document.getElementById('bookings-search')?.value||'').toLowerCase().trim();
+  const f = (document.getElementById('bookings-filter')?.value||'all').toLowerCase();
+  const data = (window._allBookings||[]).filter(b => {
+    const matchStatus = f === 'all' || (b.status||'pending').toLowerCase() === f;
+    const matchSearch = !q || (b.from_name||'').toLowerCase().includes(q) || (b.trip_name||'').toLowerCase().includes(q);
+    return matchStatus && matchSearch;
+  });
+  if (!data.length) { showToast('No bookings to export', 'error'); return; }
+  const headers = ['Name','Trip','Date','Adults','Children','Option','Contact','WhatsApp','Email','Nationality','Status','Timestamp'];
+  const rows = data.map(b => [b.from_name,b.trip_name,b.trip_date,b.adults,b.children,b.option,b.contact_method,b.whatsapp,b.email,b.nationality,b.status||'Pending',b.timestamp||'']);
+  const csv = [headers,...rows].map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})),download:'bookings_'+new Date().toISOString().slice(0,10)+'.csv'});
+  a.click();
+}
+
+function clearBookings() {
+  if (!confirm('Clear localStorage bookings only?\n(Firestore bookings are preserved and will still appear.)')) return;
+  localStorage.removeItem('bts_bookings');
+  showToast('Local bookings cleared — Firestore data preserved', 'success');
+  loadBookings();
+}
+(function() {
+  if (isAuthed()) {
+    document.getElementById('pin-screen').style.display = 'none';
+    initAdmin();
+  } else {
+    setTimeout(() => document.getElementById('pin-input').focus(), 100);
+  }
+})();
+</script>
+</body>
+</html>

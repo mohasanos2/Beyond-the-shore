@@ -1,0 +1,38 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Node (if ever added)
+node_modules/
+npm-debug.log*
+
+# Build artifacts
+dist/
+*.zip
+
+# Secrets — NEVER commit real keys
+# These files contain real API keys — only example versions go in git
+js/firebase.js
+js/emailjs-config.js
+# firebase.example.js is committed WITH placeholders only — never put real keys here
+
+# Extra safety — catch common secret file patterns
+*.env
+.env*
+*secret*
+*private*
+config.local.js
+firebase.local.js
+
+# NOTE: /admin/ is intentionally public on GitHub Pages.
+# For true admin security, use Cloudflare Access or rename to secret path.

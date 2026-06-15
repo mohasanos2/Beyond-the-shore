@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- ── Main Pages ── -->
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- ── Trip Detail Pages ── -->
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=sataya</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=hamata</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=coral</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=abu</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=mubarak</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=luli</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=temples</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=balloon</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=felucca</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=luxor-market</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=abusimbel</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=nilecruise</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/trip.html?id=nubian</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- ── Booking Flow (noindex pages excluded) ── -->
+  <!-- booking.html, booking-dest.html, login.html, register.html are noindex — excluded from sitemap -->
+
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/faq.html</loc>
+    <lastmod>2026-06-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mohasanos2.github.io/Beyond-the-shore/about.html</loc>
+    <lastmod>2026-06-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: https: blob:; font-src https://fonts.gstatic.com; connect-src 'self' https://bgkwvyjyjorzwtuircmf.supabase.co https://beyond-the-shore-api.onrender.com; frame-ancestors 'none';">
+<meta name="theme-color" content="#0797A8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Trip Details — Beyond The Shore</title>
+<link rel="icon" type="image/x-icon" href="images/favicon.ico"/>
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png"/>
+<meta name="robots" content="index, follow"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<script type="application/ld+json" id="trip-jsonld"></script>
+<style>
+/* ── TRIP PAGE STYLES ── */
+.tp-hero{position:relative;width:100%;height:70vh;min-height:420px;max-height:600px;overflow:hidden;background:#1a1a2e}
+.tp-hero img{width:100%;height:100%;object-fit:cover;display:block}
+.tp-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.6) 100%)}
+.tp-hero-content{position:absolute;bottom:0;left:0;right:0;padding:2.5rem 2rem 2rem;color:#fff}
+.tp-hero-badge{display:inline-block;background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.3);border-radius:50px;padding:0.3rem 1rem;font-family:Outfit,sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:0.05em;margin-bottom:0.75rem}
+.tp-hero-name{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:600;line-height:1.15;margin-bottom:0.5rem}
+.tp-hero-loc{font-family:Outfit,sans-serif;font-size:0.9rem;opacity:0.85}
+.tp-hero-emoji{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:6rem}
+
+/* sticky inner nav */
+.tp-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border-bottom:1px solid #e8e8e8;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+.tp-nav-inner{display:inline-flex;gap:0;padding:0 1rem;min-width:100%}
+.tp-nav-btn{font-family:Outfit,sans-serif;font-size:0.82rem;font-weight:500;color:#888;padding:1rem 1.25rem;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;white-space:nowrap}
+.tp-nav-btn.active,.tp-nav-btn:hover{color:var(--teal,#0797A8);border-bottom-color:var(--teal,#0797A8)}
+
+/* main layout */
+.tp-body{max-width:860px;margin:0 auto;padding:0 1.25rem 8rem}
+
+/* price bar */
+.tp-price-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding:1.5rem 0;border-bottom:1px solid #f0f0f0;margin-bottom:2rem}
+.tp-price-main{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--teal,#0797A8)}
+.tp-price-pp{font-family:Outfit,sans-serif;font-size:0.82rem;color:#888;margin-left:4px}
+.tp-verified{display:inline-flex;align-items:center;gap:6px;background:rgba(7,151,168,0.08);color:var(--teal,#0797A8);border-radius:50px;padding:0.35rem 0.9rem;font-family:Outfit,sans-serif;font-size:0.78rem;font-weight:600}
+
+/* sections */
+.tp-section{padding:2rem 0;border-bottom:1px solid #f0f0f0}
+.tp-section:last-child{border-bottom:none}
+.tp-section-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:#1a1a2e;margin-bottom:1.25rem}
+
+/* details grid */
+.tp-details{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem;margin-bottom:0}
+.tp-detail-card{background:#f8f9fa;border-radius:12px;padding:1rem;text-align:center}
+.tp-detail-label{font-family:Outfit,sans-serif;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;margin-bottom:0.35rem}
+.tp-detail-val{font-family:Outfit,sans-serif;font-size:0.92rem;font-weight:600;color:#1a1a2e}
+
+/* highlights */
+.tp-highlights{display:flex;flex-wrap:wrap;gap:0.5rem}
+.tp-highlight-tag{background:rgba(7,151,168,0.08);color:var(--teal,#0797A8);border-radius:50px;padding:0.4rem 1rem;font-family:Outfit,sans-serif;font-size:0.82rem;font-weight:500}
+
+/* itinerary */
+.tp-itinerary{display:flex;flex-direction:column;gap:0}
+.tp-itin-item{display:flex;gap:1.25rem;padding:1.25rem 0}
+.tp-itin-item:not(:last-child){border-bottom:1px solid #f5f5f5}
+.tp-itin-time{flex-shrink:0;width:72px;font-family:Outfit,sans-serif;font-size:0.8rem;font-weight:700;color:var(--teal,#0797A8);padding-top:2px}
+.tp-itin-dot{flex-shrink:0;width:12px;height:12px;border-radius:50%;background:var(--teal,#0797A8);margin-top:5px;box-shadow:0 0 0 3px rgba(7,151,168,0.15)}
+.tp-itin-body{flex:1}
+.tp-itin-title{font-family:Outfit,sans-serif;font-size:0.95rem;font-weight:600;color:#1a1a2e;margin-bottom:0.25rem}
+.tp-itin-desc{font-family:Outfit,sans-serif;font-size:0.84rem;color:#888;line-height:1.5}
+
+/* fallback itinerary */
+.tp-itin-fallback{background:#f8f9fa;border-radius:14px;padding:1.5rem;text-align:center;color:#aaa;font-family:Outfit,sans-serif;font-size:0.88rem}
+
+/* includes / excludes */
+.tp-inc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:540px){.tp-inc-grid{grid-template-columns:1fr}}
+.tp-inc-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.6rem}
+.tp-inc-list li{font-family:Outfit,sans-serif;font-size:0.88rem;color:#444;display:flex;align-items:flex-start;gap:0.5rem;line-height:1.5}
+.tp-inc-list li span.icon{flex-shrink:0;margin-top:1px}
+
+/* options */
+.tp-options{display:flex;flex-direction:column;gap:0.75rem}
+.tp-option-card{border:2px solid #e8e8e8;border-radius:12px;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:border-color .2s,background .2s}
+.tp-option-card:hover{border-color:var(--teal,#0797A8);background:rgba(7,151,168,0.04)}
+.tp-option-label{font-family:Outfit,sans-serif;font-size:0.92rem;font-weight:600;color:#1a1a2e}
+.tp-option-price{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--teal,#0797A8)}
+
+/* similar trips */
+.tp-similar{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.tp-sim-card{border:1px solid #e8e8e8;border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.tp-sim-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.1)}
+.tp-sim-img{height:120px;display:flex;align-items:center;justify-content:center;font-size:2.5rem}
+.tp-sim-body{padding:0.85rem 1rem}
+.tp-sim-name{font-family:Outfit,sans-serif;font-size:0.88rem;font-weight:600;color:#1a1a2e;margin-bottom:0.25rem}
+.tp-sim-price{font-family:Outfit,sans-serif;font-size:0.8rem;color:var(--teal,#0797A8);font-weight:600}
+
+/* sticky CTA bottom */
+.tp-cta-bar{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);border-top:1px solid #e8e8e8;padding:0.85rem 1.25rem;display:flex;gap:0.75rem;align-items:center}
+.tp-cta-wa{flex:1;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:#25D366;color:#fff;border:none;border-radius:50px;padding:0.85rem 1rem;font-family:Outfit,sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;text-decoration:none;transition:opacity .2s}
+.tp-cta-wa:hover{opacity:0.9}
+.tp-cta-book{flex:2;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:var(--teal,#0797A8);color:#fff;border:none;border-radius:50px;padding:0.85rem 1rem;font-family:Outfit,sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;text-decoration:none;transition:opacity .2s}
+.tp-cta-book:hover{opacity:0.9}
+</style>
+</head>
+<body>
+<div class="bg-emojis" id="bg-emojis">
+  <span class="bg-emoji"></span><span class="bg-emoji"></span>
+  <span class="bg-emoji"></span><span class="bg-emoji"></span>
+  <span class="bg-emoji"></span><span class="bg-emoji"></span>
+  <span class="bg-emoji"></span><span class="bg-emoji"></span>
+  <span class="bg-emoji"></span><span class="bg-emoji"></span>
+  <span class="bg-emoji"></span><span class="bg-emoji"></span>
+</div>
+
+<div id="navbar-component"></div>
+
+<div id="trip-page">
+  <div id="trip-content">
+    <div style="padding:6rem 2rem;text-align:center;color:#888;font-family:Outfit,sans-serif">Loading…</div>
+  </div>
+</div>
+
+<script src="js/booking-router.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+const id = new URLSearchParams(window.location.search).get('id') || null;
+function esc(s){if(s==null)return'';return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function scrollToSection(sid){
+  const el = document.getElementById(sid);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  document.querySelectorAll('.tp-nav-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector('[data-section="'+sid+'"]');
+  if(btn) btn.classList.add('active');
+}
+
+async function renderTripPage(){
+  await initTripsData();
+  const t = id ? findTrip(id) : null;
+  const container = document.getElementById('trip-content');
+
+  if(!t){
+    container.innerHTML = '<div style="padding:6rem 2rem;text-align:center;font-family:Outfit,sans-serif"><h2>Trip not found</h2><br/><a href="index.html" style="color:var(--teal)">← Back to all trips</a></div>';
+    return;
+  }
+
+  document.title = t.name + ' — Beyond The Shore';
+
+  // SEO structured data
+  const jsonld = document.getElementById('trip-jsonld');
+  if(jsonld){
+    jsonld.textContent = JSON.stringify({
+      "@context":"https://schema.org","@type":"TouristTrip",
+      "name":t.name,"description":t.desc||'',
+      "provider":{"@type":"TravelAgency","name":"Beyond The Shore"},
+      "offers":{"@type":"Offer","price":String(t.priceNum||''),"priceCurrency":"USD"}
+    });
+  }
+
+  const waMsg = encodeURIComponent('Hi! I am interested in: ' + t.name + ' (' + t.price + '). Can you help me?');
+
+  // hero
+  const heroHTML = '<div class="tp-hero">'
+    + (t.imageUrl
+        ? '<img src="'+esc(t.imageUrl)+'" alt="'+esc(t.name)+'" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'"/><div class="tp-hero-emoji" style="display:none;position:absolute;inset:0">'+esc(t.icon)+'</div>'
+        : '<div class="tp-hero-emoji" style="background:'+esc(t.bgGrad)+'">'+esc(t.icon)+'</div>')
+    + '<div class="tp-hero-overlay"></div>'
+    + '<div class="tp-hero-content">'
+    + '<div class="tp-hero-badge">'+esc(t.badge)+'</div>'
+    + '<div class="tp-hero-name">'+esc(t.name)+'</div>'
+    + '<div class="tp-hero-loc">📍 '+esc(t.loc)+'</div>'
+    + '</div></div>';
+
+  // sticky inner nav
+  const navHTML = '<nav class="tp-nav">'
+    + '<div class="tp-nav-inner">'
+    + '<button class="tp-nav-btn active" data-section="sec-overview" onclick="scrollToSection(\'sec-overview\')">Overview</button>'
+    + '<button class="tp-nav-btn" data-section="sec-itinerary" onclick="scrollToSection(\'sec-itinerary\')">Itinerary</button>'
+    + '<button class="tp-nav-btn" data-section="sec-includes" onclick="scrollToSection(\'sec-includes\')">Includes</button>'
+    + (t.options ? '<button class="tp-nav-btn" data-section="sec-options" onclick="scrollToSection(\'sec-options\')">Options</button>' : '')
+    + '<button class="tp-nav-btn" data-section="sec-similar" onclick="scrollToSection(\'sec-similar\')">More Trips</button>'
+    + '</div></nav>';
+
+  // price bar
+  const priceHTML = '<div class="tp-price-bar">'
+    + '<div><span class="tp-verified">✓ Verified Tour</span></div>'
+    + '<div>'
+    + (t.options
+        ? t.options.map(o => '<div style="margin:3px 0"><span class="tp-price-main">'+esc(o.price)+'</span><span class="tp-price-pp"> · '+esc(o.label)+'</span></div>').join('')
+        : '<span class="tp-price-main">'+esc(t.price)+'</span><span class="tp-price-pp"> / person</span>')
+    + '</div></div>';
+
+  // overview section
+  const overviewHTML = '<div class="tp-section" id="sec-overview">'
+    + '<p style="font-family:Outfit,sans-serif;font-size:1rem;color:#555;line-height:1.75;margin-bottom:1.5rem">'+esc(t.desc)+'</p>'
+    + '<div class="tp-details">'
+    + t.details.map(d => '<div class="tp-detail-card"><div class="tp-detail-label">'+esc(d.l)+'</div><div class="tp-detail-val">'+esc(d.v)+'</div></div>').join('')
+    + '</div>'
+    + (t.tagLabels && t.tagLabels.length ? '<div style="margin-top:1.25rem"><div class="tp-highlights">'+t.tagLabels.map(x=>'<span class="tp-highlight-tag">'+esc(x)+'</span>').join('')+'</div></div>' : '')
+    + '</div>';
+
+  // itinerary section
+  let itinHTML = '<div class="tp-section" id="sec-itinerary"><div class="tp-section-title">Day Itinerary</div>';
+  if(t.itinerary && t.itinerary.length){
+    itinHTML += '<div class="tp-itinerary">'
+      + t.itinerary.map(item =>
+          '<div class="tp-itin-item">'
+          + '<div class="tp-itin-time">'+esc(item.time)+'</div>'
+          + '<div class="tp-itin-dot"></div>'
+          + '<div class="tp-itin-body"><div class="tp-itin-title">'+esc(item.title)+'</div>'
+          + (item.desc ? '<div class="tp-itin-desc">'+esc(item.desc)+'</div>' : '')
+          + '</div></div>'
+        ).join('')
+      + '</div>';
+  } else {
+    itinHTML += '<div class="tp-itin-fallback">🗓️ Detailed itinerary coming soon.<br/>Contact us on WhatsApp for the full day program.</div>';
+  }
+  itinHTML += '</div>';
+
+  // includes / excludes section
+  const incHTML = '<div class="tp-section" id="sec-includes"><div class="tp-section-title">What\'s Included</div>'
+    + '<div class="tp-inc-grid">'
+    + '<div><div style="font-family:Outfit,sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#3DB85C;margin-bottom:0.75rem">✓ Included</div>'
+    + '<ul class="tp-inc-list">'
+    + (t.includes||[]).map(i=>'<li><span class="icon">✅</span>'+esc(i)+'</li>').join('')
+    + '</ul></div>'
+    + (t.excludes && t.excludes.length
+        ? '<div><div style="font-family:Outfit,sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#e05c3a;margin-bottom:0.75rem">✗ Not Included</div>'
+          + '<ul class="tp-inc-list">'
+          + t.excludes.map(i=>'<li><span class="icon">❌</span>'+esc(i)+'</li>').join('')
+          + '</ul></div>'
+        : '')
+    + '</div></div>';
+
+  // options section
+  const optHTML = t.options ? '<div class="tp-section" id="sec-options"><div class="tp-section-title">Choose Your Option</div>'
+    + '<div class="tp-options">'
+    + t.options.map(o =>
+        '<div class="tp-option-card" onclick="BookingRouter.goToBooking(\''+esc(t.id)+'\')">'
+        + '<div><div class="tp-option-label">'+esc(o.label)+'</div>'
+        + (o.duration ? '<div style="font-family:Outfit,sans-serif;font-size:0.78rem;color:#aaa;margin-top:3px">'+esc(o.duration)+'</div>' : '')
+        + '</div><div class="tp-option-price">'+esc(o.price)+'</div></div>'
+      ).join('')
+    + '</div></div>' : '';
+
+  // similar trips
+  const allT = [
+    ...(window.allTrips?.marsa||[]),
+    ...(window.allTrips?.luxor||[]),
+    ...(window.allTrips?.aswan||[])
+  ].filter(x => x.id !== t.id).slice(0,3);
+
+  const simHTML = '<div class="tp-section" id="sec-similar"><div class="tp-section-title">You Might Also Like</div>'
+    + '<div class="tp-similar">'
+    + allT.map(s =>
+        '<div class="tp-sim-card" onclick="window.location.href=\'trip.html?id=\'+esc(s.id)">'
+        + '<div class="tp-sim-img" style="background:'+esc(s.bgGrad)+'">'+esc(s.icon)+'</div>'
+        + '<div class="tp-sim-body"><div class="tp-sim-name">'+esc(s.name)+'</div>'
+        + '<div class="tp-sim-price">'+esc(s.price)+'</div></div></div>'
+      ).join('')
+    + '</div></div>';
+
+  // sticky CTA
+  const ctaHTML = '<div class="tp-cta-bar">'
+    + '<a class="tp-cta-wa" href="https://wa.me/201037420949?text='+waMsg+'">💬 WhatsApp</a>'
+    + '<a class="tp-cta-book" href="javascript:void(0)" onclick="BookingRouter.goToBooking(\''+esc(t.id)+'\')">📋 Book Now</a>'
+    + '</div>';
+
+  container.innerHTML = heroHTML + navHTML
+    + '<div class="tp-body">'
+    + '<a href="index.html" style="display:inline-block;margin:1.25rem 0 0.5rem;font-family:Outfit,sans-serif;font-size:0.85rem;color:#aaa;text-decoration:none">← All Trips</a>'
+    + priceHTML + overviewHTML + itinHTML + incHTML + optHTML + simHTML
+    + '</div>' + ctaHTML;
+
+  // bg emojis
+  const tripEmojis = {
+    sataya:['🐬','🌊','🐟','🐠','🪸','⭐','🐬','🌊','🐡','🪸','🐬','💙'],
+    hamata:['🏝️','🌊','🐢','🪸','🐠','🌴','🏝️','⭐','🐟','🌊','🦀','🌿'],
+    coral:['🪸','🐠','🤿','🐟','🌊','🐡','🪸','⭐','🐬','🦈','🐙','💎'],
+    abu:['🐢','🦭','🌊','🏖️','🐠','🪸','🐢','⭐','🌿','🐡','🌊','💚'],
+    mubarak:['🦭','🐢','🌊','🐠','🪸','⭐','🦭','💙','🐟','🌿','🦭','🌊'],
+    luli:['🏖️','🌊','🐢','🪸','🐠','🌴','⭐','🏖️','🐟','🦜','🌊','💛'],
+    temples:['🏛️','🗿','🌅','⭐','🏺','🌙','🏛️','✨','🦅','🗿','🌅','🏺'],
+    balloon:['🎈','🌅','🏛️','⭐','✨','🌙','🎈','🌅','🏺','🌤️','🎈','🌟'],
+    felucca:['⛵','🌅','🌊','🌙','⭐','🏛️','⛵','💛','🌿','🌅','⛵','✨'],
+    abusimbel:['🗿','🏺','🌅','⭐','🏛️','✨','🗿','🌙','🦅','🌅','🏺','💛'],
+    nilecruise:['🚢','🌊','🏛️','🗿','⭐','🌅','🚢','✨','🏺','🌙','🚢','💙'],
+    nubian:['🏘️','🌴','⛵','🌊','⭐','🎨','🏘️','🌅','🌿','🎭','🏘️','💛']
+  };
+  const emojiSet = tripEmojis[id] || ['🌊','⭐','🌿','🐠','🪸','✨','🌅','💙','🐟','🌊','⭐','🌿'];
+  document.querySelectorAll('.bg-emoji').forEach((s,i) => { s.textContent = emojiSet[i % emojiSet.length]; });
+
+  // scroll spy
+  window.addEventListener('scroll', () => {
+    const sections = ['sec-overview','sec-itinerary','sec-includes','sec-options','sec-similar'];
+    let current = sections[0];
+    sections.forEach(sid => {
+      const el = document.getElementById(sid);
+      if(el && window.scrollY >= el.offsetTop - 120) current = sid;
+    });
+    document.querySelectorAll('.tp-nav-btn').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-section') === current);
+    });
+    const nav = document.getElementById('nav');
+    if(nav) nav.classList.toggle('scrolled', scrollY > 40);
+  }, {passive:true});
+}
+
+renderTripPage();
+</script>
+<div id="footer-component"></div>
+<div id="whatsapp-component"></div>
+<script src="js/componentLoader.js"></script>
+</body>
+</html>

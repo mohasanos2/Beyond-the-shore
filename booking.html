@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: https: blob:; font-src https://fonts.gstatic.com; connect-src 'self' https://bgkwvyjyjorzwtuircmf.supabase.co https://beyond-the-shore-api.onrender.com; frame-ancestors 'none';">
+<meta name="theme-color" content="#0797A8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Book a Trip — Beyond The Shore</title>
+<link rel="icon" type="image/x-icon" href="images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Book a Trip — Beyond The Shore"/>
+<meta property="og:description" content="Reserve your Red Sea experience online. Sataya dolphins, snorkeling, island tours and more."/>
+<meta property="og:image" content="https://mohasanos2.github.io/Beyond-the-shore/images/logo.png"/>
+<meta name="robots" content="noindex"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<meta name="description" content="Book your Red Sea trip — dolphins, snorkeling, Nile cruises and more. Simple 3-step booking with Beyond The Shore."/>
+</head>
+<body>
+<div id="navbar-component"></div>
+<div class="booking-hero">
+  <div class="sec-tag">No Payment Required Now</div>
+  <h1>Reserve Your <em>Experience</em></h1>
+  <p>Fill in 3 simple steps and we'll confirm your booking within 24 hours.</p>
+  <div class="no-payment-badge">✓ Free reservation · No credit card needed</div>
+</div>
+<div class="booking-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="33" aria-label="Booking progress"><div id="booking-progress-bar" class="booking-progress-bar"></div></div><div class="booking-layout"><aside class="booking-summary-sidebar"><h3>Booking Summary</h3><div id="booking-summary-top"><div class="summary-empty">Select a trip to see your summary.</div></div></aside>
+  <div>
+    <div class="steps-bar" id="steps-bar">
+      <div class="step-item"><div class="step-num active" id="snum-1">1</div><span class="step-label active" id="slabel-1">Choose Trip</span></div>
+      <div class="step-line" id="sline-1"></div>
+      <div class="step-item"><div class="step-num pending" id="snum-2">2</div><span class="step-label" id="slabel-2">Date & Guests</span></div>
+      <div class="step-line" id="sline-2"></div>
+      <div class="step-item"><div class="step-num pending" id="snum-3">3</div><span class="step-label" id="slabel-3">Your Details</span></div>
+    </div>
+    <div class="step-panel active" id="panel-1">
+      <div id="dest-filter-badge" style="display:none;margin-bottom:1rem;font-family:Outfit,sans-serif;font-size:0.82rem;color:var(--teal);font-weight:600">
+        <span id="dest-filter-label"></span>
+        <a href="booking-dest.html" style="color:var(--ink-mid);font-weight:400;margin-left:0.75rem;text-decoration:underline;font-size:0.78rem">← Change destination</a>
+      </div>
+      <div class="step-card">
+        <h3>Choose Your Trip</h3>
+        <p class="step-desc">Select the experience you want to book.</p>
+        <div class="trip-options" id="trip-options"></div>
+        <div class="step-nav"><span></span><button class="btn-next" id="btn-next-1" onclick="goStep(2)" disabled>Continue →</button></div>
+      </div>
+    </div>
+    <div class="step-panel" id="panel-2">
+      <div class="step-card">
+        <h3>Date & Guests</h3>
+        <p class="step-desc">Pick your preferred date and tell us how many people.</p>
+        <div id="trip-options-area" style="display:none;margin-bottom:1.5rem"></div>
+        <div class="cal-nav">
+          <button onclick="changeMonth(-1)">‹</button>
+          <span class="cal-month" id="cal-month-label"></span>
+          <button onclick="changeMonth(1)">›</button>
+        </div>
+        <div class="date-grid-header"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+        <div class="date-grid" id="date-grid"></div>
+        <div style="margin-top:1.8rem;margin-bottom:1rem">
+          <div style="font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-mid);margin-bottom:0.8rem">Number of Guests</div>
+          <div class="counter-row">
+            <div><div class="counter-label">Adults</div><div class="counter-sub">Age 12+</div></div>
+            <div class="counter-ctrl"><button class="counter-btn" onclick="changeCount('adults',-1)">−</button><span class="counter-val" id="count-adults">1</span><button class="counter-btn" onclick="changeCount('adults',1)">+</button></div>
+          </div>
+          <div class="counter-row">
+            <div><div class="counter-label">Children</div><div class="counter-sub">Age 4–11</div></div>
+            <div class="counter-ctrl"><button class="counter-btn" onclick="changeCount('children',-1)">−</button><span class="counter-val" id="count-children">0</span><button class="counter-btn" onclick="changeCount('children',1)">+</button></div>
+          </div>
+        </div>
+        <div class="step-nav"><button class="btn-back" onclick="goStep(1)">← Back</button><button class="btn-next" id="btn-next-2" onclick="goStep(3)" disabled title="Select a date to continue">Continue →</button></div>
+      </div>
+    </div>
+    <div class="step-panel" id="panel-3">
+      <div class="step-card">
+        <h3>Your Details</h3>
+        <p class="step-desc">How should we reach you to confirm the booking?</p>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">First Name *</label><input class="form-input" type="text" id="f-fname" placeholder="Your first name" oninput="updateSummary()"/></div>
+          <div class="form-group"><label class="form-label">Last Name *</label><input class="form-input" type="text" id="f-lname" placeholder="Your last name" oninput="updateSummary()"/></div>
+        </div>
+        <div style="margin-bottom:1rem">
+          <div class="form-label" style="margin-bottom:0.6rem">Preferred Contact Method *</div>
+          <div class="contact-toggle">
+            <div class="contact-opt selected" id="copt-wa" onclick="selectContact('whatsapp')">💬 WhatsApp</div>
+            <div class="contact-opt" id="copt-email" onclick="selectContact('email')">✉️ Email</div>
+            <div class="contact-opt" id="copt-both" onclick="selectContact('both')">📱 Both</div>
+          </div>
+        </div>
+        <div class="form-row" id="contact-fields">
+          <div class="form-group"><label class="form-label">WhatsApp Number *</label><input class="form-input" type="tel" id="f-wa" placeholder="+1 234 567 8900" oninput="updateSummary()"/></div><div class="form-group"><label class="form-label">Email Address *</label><input class="form-input" type="email" id="f-email" placeholder="your@email.com" oninput="updateSummary()"/></div>
+        </div>
+        <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Nationality</label><input class="form-input" type="text" id="f-nationality" placeholder="e.g. German, Italian…" oninput="updateSummary()"/></div>
+        <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Special Requests or Questions</label><textarea class="form-textarea" id="f-notes" placeholder="Any dietary requirements, health concerns, special occasions, questions about the trip…" oninput="updateSummary()"></textarea></div>
+        <div style="background:var(--sun-pale);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:0.82rem;color:var(--ink-mid);line-height:1.6">🔒 <strong>No payment required.</strong> After submitting, we'll review your request and contact you within 24 hours to confirm availability and next steps.</div>
+        <div class="step-nav"><button class="btn-back" onclick="goStep(2)">← Back</button><button class="btn-submit" onclick="submitBooking()">✓ Send Reservation</button></div>
+      </div>
+    </div>
+    <div class="step-panel" id="panel-success">
+      <div class="success-card">
+        <div class="success-icon">🎉</div>
+        <h2>Reservation Sent!</h2>
+        <p>Thank you! We've received your booking request and will contact you within 24 hours to confirm everything.</p>
+        <div class="success-details" id="success-details"></div>
+        <div class="success-actions">
+          <a href="https://wa.me/201037420949" target="_blank" class="btn-wa" style="text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;padding:0.8rem 1.8rem;background:#25D366;color:white;border-radius:50px;font-size:0.85rem;font-weight:600">💬 Chat on WhatsApp</a>
+          <button onclick="window.location.href='index.html'" style="padding:0.8rem 1.8rem;border-radius:50px;border:1.5px solid var(--border);background:white;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;color:var(--ink)">← Back to Home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="booking-summary">
+    <div class="summary-card">
+      <div class="summary-title">📋 Booking Summary</div>
+      <div id="summary-content"><div class="summary-empty">Complete the steps to see your summary here.</div></div>
+      <div class="summary-note"><strong>✓ No payment now.</strong> We'll confirm availability and discuss payment options when we contact you.</div>
+    </div>
+  </div>
+</div>
+<script src="js/booking-router.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  // initTripsData() + renderTripOptions() + renderCal() are handled by the
+  // IIFE at the bottom of app.js.  We only handle booking-page-specific logic here.
+
+  selectContact('whatsapp');
+
+  // Show destination filter badge if dest param present
+  const _dp = new URLSearchParams(window.location.search).get('dest')
+           || localStorage.getItem('bts_dest');
+  const _destNames = {marsa:'🌊 Marsa Alam',luxor:'🏛️ Luxor',aswan:'🏺 Aswan'};
+  if (_dp && _destNames[_dp]) {
+    const badge = document.getElementById('dest-filter-badge');
+    const label = document.getElementById('dest-filter-label');
+    if (badge && label) {
+      label.textContent = 'Showing trips for: ' + _destNames[_dp];
+      badge.style.display = 'block';
+    }
+  }
+
+  // Deep-link from trip card or trip detail page — wait for trips to be rendered first
+  const _bid = BookingRouter.getBookId();
+  if (_bid) {
+    // Poll until trip-options are rendered (IIFE may still be fetching)
+    const trySelect = () => {
+      const t = findTrip(_bid);
+      const el = document.querySelector(`[data-id="${_bid}"]`);
+      if (t && el) { selectTrip(_bid, el); goStep(2); }
+      else if (t) { setTimeout(trySelect, 100); }
+    };
+    setTimeout(trySelect, 100);
+  }
+});
+</script>
+
+<div id="footer-component"></div>
+<div id="whatsapp-component"></div>
+<script src="js/componentLoader.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin/
+Allow: /
+
+Sitemap: https://mohasanos2.github.io/Beyond-the-shore/sitemap.xml

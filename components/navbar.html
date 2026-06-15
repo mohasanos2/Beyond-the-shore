@@ -1,0 +1,89 @@
+<nav id="nav">
+  <div class="logo">
+    <a href="index.html">
+      <picture>
+        <source srcset="https://mohasanos2.github.io/Beyond-the-shore/images/logo.webp" type="image/webp">
+        <img src="https://mohasanos2.github.io/Beyond-the-shore/images/logo.png" alt="Beyond The Shore" class="logo-img"
+             width="120" height="142" loading="lazy"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" />
+      </picture>
+      <span style="display:none;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--teal)">Beyond The Shore</span>
+    </a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-lang-btn" id="nav-lang-btn" onclick="if(window.toggleLang)window.toggleLang()">🌐 Language</button>
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleHamburgerMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Overlay -->
+<div class="menu-overlay" id="menu-overlay" onclick="closeHamburgerMenu()"></div>
+
+<!-- Slide-in Menu -->
+<div class="slide-menu" id="slide-menu">
+  <button class="slide-menu-close" onclick="closeHamburgerMenu()">✕</button>
+  <div class="slide-menu-inner">
+    <a class="slide-menu-item" href="index.html">🏠 Home</a>
+    <a class="slide-menu-item" href="index.html#trips">🌊 Our Trips</a>
+    <a class="slide-menu-item" href="booking-dest.html">📋 Book a Trip</a>
+    <div class="slide-menu-divider"></div>
+    <a class="slide-menu-item" href="faq.html">❓ FAQ</a>
+    <a class="slide-menu-item" href="about.html">🧭 About Us</a>
+    <div class="slide-menu-divider"></div>
+    <a class="slide-menu-item" href="my-bookings.html">📅 My Bookings</a>
+    <div class="slide-menu-divider"></div>
+    <div class="slide-menu-subscribe">
+      <p class="slide-menu-subscribe-label">Get trip updates &amp; deals</p>
+      <div class="slide-menu-pill">
+        <input class="slide-menu-email" type="email" id="nav-newsletter-email" placeholder="Your email" autocomplete="email"/>
+        <button class="slide-menu-sub-btn" onclick="subscribeNewsletter(document.getElementById('nav-newsletter-email'), 'nav-newsletter-feedback')">→</button>
+      </div>
+      <div class="slide-menu-sub-feedback" id="nav-newsletter-feedback"></div>
+    </div>
+    <div class="slide-menu-divider"></div>
+    <a class="slide-menu-item slide-menu-wa" href="https://wa.me/201037420949" target="_blank">💬 WhatsApp Us</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ── Hamburger toggle ──
+  window.toggleHamburgerMenu = function(){
+    const menu = document.getElementById('slide-menu');
+    const overlay = document.getElementById('menu-overlay');
+    const btn = document.getElementById('hamburger-btn');
+    if(!menu) return;
+    const isOpen = menu.classList.contains('open');
+    if(isOpen){ closeHamburgerMenu(); }
+    else {
+      menu.classList.add('open');
+      overlay.classList.add('open');
+      btn.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  window.closeHamburgerMenu = function(){
+    const menu = document.getElementById('slide-menu');
+    const overlay = document.getElementById('menu-overlay');
+    const btn = document.getElementById('hamburger-btn');
+    if(menu) menu.classList.remove('open');
+    if(overlay) overlay.classList.remove('open');
+    if(btn) btn.classList.remove('active');
+    document.body.style.overflow = '';
+  };
+
+  // Close on ESC
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') window.closeHamburgerMenu && window.closeHamburgerMenu();
+  });
+
+  // ── Nav-lang-btn label sync ──
+  const savedLang = localStorage.getItem('bts_lang') || 'en';
+  const langLabels = {en:'🌐 Language',ru:'🌐 Язык',de:'🌐 Sprache',fr:'🌐 Langue',it:'🌐 Lingua',cs:'🌐 Jazyk',pl:'🌐 Język',zh:'🌐 语言',ja:'🌐 言語'};
+  const btn = document.getElementById('nav-lang-btn');
+  if(btn && langLabels[savedLang]) btn.textContent = langLabels[savedLang];
+})();
+</script>
