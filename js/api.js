@@ -26,8 +26,8 @@ async function sbFetch(path, options = {}) {
 }
 
 const TripsAPI = {
-  getAll: () => sbFetch('trips?is_active=eq.true&order=created_at.asc'),
-  getById: (id) => sbFetch(`trips?id=eq.${id}`).then(r => r[0])
+  getAll: () => sbFetch('trips?select=*,icon,badge,bg_gradient&is_active=eq.true&order=created_at.asc'),
+  getById: (id) => sbFetch(`trips?select=*,icon,badge,bg_gradient&id=eq.${id}`).then(r => r[0])
 };
 
 const BookingsAPI = {
@@ -91,10 +91,10 @@ async function initTripsData() {
         id: t.id,
         name: t.name,
         loc: t.location,
-        icon: getIcon(t.id),
+        icon: t.icon || getIcon(t.id),
         bg: getBg(t.id),
-        bgGrad: getBgGrad(t.id),
-        badge: getBadge(t.id),
+        bgGrad: t.bg_gradient || getBgGrad(t.id),
+        badge: t.badge || getBadge(t.id),
         price: `From $${t.price}`,
         priceNum: parseFloat(t.price) || 0,
         desc: t.description,

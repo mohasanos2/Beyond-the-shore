@@ -402,27 +402,47 @@ function updateSummary(){
 
 // ── SUBMIT ──
 async function submitBooking(){
+  const submitBtn = document.querySelector('.btn-submit');
+  if (submitBtn?.disabled) return;
+  const restoreBtn = () => {
+    if (!submitBtn) return;
+    submitBtn.disabled = false;
+    submitBtn.textContent = submitBtn.dataset.origText || '✓ Send Reservation';
+    submitBtn.style.opacity = '';
+    submitBtn.style.cursor = '';
+  };
+  const setLoading = () => {
+    if (!submitBtn) return;
+    if (!submitBtn.dataset.origText) submitBtn.dataset.origText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Booking...';
+    submitBtn.style.opacity = '0.7';
+    submitBtn.style.cursor = 'not-allowed';
+  };
+
+  setLoading();
+
   const fname=$('f-fname')?.value?.trim();
   const lname=$('f-lname')?.value?.trim();
-  if(!fname||!lname){alert('Please enter your full name.');return;}
+  if(!fname||!lname){restoreBtn();alert('Please enter your full name.');return;}
   const waVal=$('f-wa')?.value?.trim();
   const emailVal=$('f-email')?.value?.trim();
   const emailRegex=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if((state.contactMethod==='whatsapp'||state.contactMethod==='both')&&!waVal){
-    alert('Please enter your WhatsApp number.');return;
+    restoreBtn();alert('Please enter your WhatsApp number.');return;
   }
   // Email required for all methods — needed to send booking confirmation
-  if(!emailVal){alert('Please enter your email address — we need it to send your booking confirmation.');return;}
-  if(!emailRegex.test(emailVal)){alert('Please enter a valid email address (e.g. name@example.com).');return;}
+  if(!emailVal){restoreBtn();alert('Please enter your email address — we need it to send your booking confirmation.');return;}
+  if(!emailRegex.test(emailVal)){restoreBtn();alert('Please enter a valid email address (e.g. name@example.com).');return;}
   const t=state.selectedTrip;
-  if(!t){alert('Please select a trip first.');return;}
+  if(!t){restoreBtn();alert('Please select a trip first.');return;}
   if(!state.selectedDate){
-    alert('Please select a travel date before continuing.');
+    restoreBtn();alert('Please select a travel date before continuing.');
     goStep(2);
     return;
   }
   if((state.adults + state.children) < 1){
-    alert('Please add at least 1 guest.');
+    restoreBtn();alert('Please add at least 1 guest.');
     goStep(2);
     return;
   }
@@ -469,6 +489,7 @@ async function submitBooking(){
     } catch(_e) {}
 
   } catch(err) {
+    restoreBtn();
  alert('Something went wrong. Please try again or contact us on WhatsApp.');
     console.error('[Booking] API error:', err);
     // Fallback: mailto لو البيانات موجودة
@@ -484,6 +505,8 @@ async function submitBooking(){
       notes: $('f-notes')?.value || 'None'
     });
     return;
+  } finally {
+    restoreBtn();
   }
 
   // Show success panel
