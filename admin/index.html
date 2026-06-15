@@ -308,31 +308,9 @@ textarea.field-input { min-height:80px; resize:vertical; }
 <div class="toast" id="toast"></div>
 
 <script>
-// ─────────────────────────────────────────────────────────────
-// ADMIN PIN — CHANGE BEFORE DEPLOYING
-// ─────────────────────────────────────────────────────────────
-// Generate your own SHA-256 hash:
-//   1. Go to: https://emn178.github.io/online-tools/sha256.html
-//   2. Type your desired PIN
-//   3. Copy the hash and replace the value below
-//
-// ⚠️  SECURITY NOTE: Client-side PIN is obfuscated, not truly secure.
-//     For production hardening, protect /admin/ via:
-//     - Cloudflare Access (free tier): https://www.cloudflare.com/zero-trust/
-//     - Or rename admin folder to a secret path (e.g. /xk7m9admin/)
-//     - Or move admin to a private local-only file not pushed to GitHub
-// ─────────────────────────────────────────────────────────────
-const ADMIN_PIN_HASH = (function(){
-  // Default hash = SHA-256 of "changeme123" — REPLACE THIS
-  return '576e63985605143b0fa8170b6f3f97b0ba4d32c0305dc577f929b0d32f12a9f2';
-})();
 const SESSION_KEY = 'bts_admin_v';
 const TIMEOUT_MS = 30 * 60 * 1000;
 
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
 function isAuthed() {
   const s = JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null');
   return s && (Date.now() - s.t < TIMEOUT_MS);
@@ -382,17 +360,6 @@ async function verifyPin() {
 }
 function doLogout() { sessionStorage.removeItem(SESSION_KEY); location.reload(); }
 function initAdmin() {
-  // Show warning if still using default PIN hash
-  const DEFAULT_HASH = '576e63985605143b0fa8170b6f3f97b0ba4d32c0305dc577f929b0d32f12a9f2';
-  if (ADMIN_PIN_HASH === DEFAULT_HASH) {
-    const notice = document.getElementById('pin-security-notice');
-    if (notice) {
-      notice.style.display = 'block';
-      // Also show it in topbar
-      const ts = document.getElementById('topbar-status');
-      if (ts) ts.textContent = '⚠️ Default PIN — change before go-live';
-    }
-  }
   document.getElementById('topbar-status').textContent = '🟢 Backend API';
   loadAnalytics();
   loadTripsAdmin();
