@@ -497,28 +497,16 @@ async function loadAnalytics() {
   const grid = document.getElementById('stats-grid');
   if (!grid) return;
   try {
-    const [bookings, trips, subs] = await Promise.all([
-      AdminAPI.getBookings(),
-      TripsAPI.getAll(),
-      AdminAPI.getSubscribers()
-    ]);
-    let total=bookings.length, confirmed=0, pending=0;
-    const tripCount = {};
-    bookings.forEach(b => {
-      const st = (b.status||'pending').toLowerCase();
-      if (st === 'confirmed') confirmed++; else if (st === 'pending') pending++;
-      const tn = b.trips?.name || b.trip_id || '';
-      if (tn) tripCount[tn] = (tripCount[tn]||0) + 1;
-    });
-    const top = Object.entries(tripCount).sort((a,b)=>b[1]-a[1])[0];
-    const topLabel = top ? top[0] : '—';
+    const analytics = await AdminAPI.getAnalytics();
+    
     const cards = [
-      { icon:'📋', label:'Total Bookings', value: total,        color:'var(--teal)' },
-      { icon:'✅', label:'Confirmed',      value: confirmed,    color:'var(--green)' },
-      { icon:'⏳', label:'Pending',        value: pending,      color:'var(--sun)' },
-      { icon:'🌊', label:'Active Trips',   value: trips.length, color:'var(--teal)' },
-      { icon:'📧', label:'Subscribers',    value: subs.length,  color:'#7c5cbf' },
-      { icon:'🏆', label:'Top Trip',       value: topLabel,     color:'var(--coral)', wide:true },
+      { icon:'💰', label:'Total Revenue',  value: '$' + (analytics.total_revenue || 0).toLocaleString(), color:'var(--teal)' },
+      { icon:'📋', label:'Total Bookings', value: analytics.total_bookings,        color:'var(--teal)' },
+      { icon:'✅', label:'Confirmed',      value: analytics.confirmed_bookings,    color:'var(--green)' },
+      { icon:'⏳', label:'Pending',        value: analytics.pending_bookings,      color:'var(--sun)' },
+      { icon:'❌', label:'Cancelled',      value: analytics.cancelled_bookings,    color:'var(--coral)' },
+      { icon:'📧', label:'Subscribers',    value: analytics.total_subscribers,     color:'#7c5cbf' },
+      { icon:'🏆', label:'Top Trip',       value: analytics.top_trip || '—',       color:'var(--coral)', wide:true },
     ];
     grid.innerHTML = cards.map(c =>
       `<div class="stat-card" style="${c.wide?'grid-column:span 2;':''}" >
