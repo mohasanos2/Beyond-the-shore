@@ -63,7 +63,7 @@ function buildTripCardHTML(t){
        <span style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:2.5rem">${esc(t.icon)}</span>`
     : `<span>${esc(t.icon)}</span>`;
 
-  return`<div class="tcard" onclick="window.location.href='trips/${esc(t.id)}.html'">
+  return`<div class="tcard" onclick="window.location.href='/trips/${esc(t.id)}'">
     <div class="tcard-img ${esc(t.bg)}" style="${t.imageUrl?'padding:0;overflow:hidden':''}">
       ${t.disc?`<div class="disc-badge">${esc(t.disc)}</div>`:''}
       <div class="pop-badge">${esc(t.badge)}</div>

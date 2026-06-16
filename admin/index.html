@@ -461,7 +461,7 @@ async function saveTrip() {
     id, name: document.getElementById('m-name').value.trim(),
     destination: document.getElementById('m-dest').value,
     loc: document.getElementById('m-loc').value.trim(),
-    price: document.getElementById('m-price').value.trim(),
+    price: parseFloat(document.getElementById('m-price').value.trim()) || 0,
     badge: document.getElementById('m-badge').value.trim(),
     desc: document.getElementById('m-desc').value.trim(),
     imageUrl: document.getElementById('m-img').value.trim()||null,

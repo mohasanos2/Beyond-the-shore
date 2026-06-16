@@ -26,8 +26,8 @@ async function sbFetch(path, options = {}) {
 }
 
 const TripsAPI = {
-  getAll: () => sbFetch('trips?select=*,icon,badge,bg_gradient&is_active=eq.true&order=created_at.asc'),
-  getById: (id) => sbFetch(`trips?select=*,icon,badge,bg_gradient&id=eq.${id}`).then(r => r[0])
+  getAll: () => sbFetch("trips?select=*,icon,badge,bg_gradient&is_active=eq.true&order=created_at.asc"),
+  // getById: (id) => sbFetch(`trips?select=*,icon,badge,bg_gradient&id=eq.${id}`).then(r => r[0]) // No longer needed for SSR
 };
 
 const BookingsAPI = {
@@ -37,6 +37,18 @@ const BookingsAPI = {
     body: JSON.stringify(data)
   }).then(r => r.json()),
   getById: (id) => sbFetch(`bookings?id=eq.${id}`).then(r => r[0])
+};
+
+const ReviewsAPI = {
+  getByTripId: (tripId) => fetch(`${API_URL}/api/reviews/${tripId}`).then(r => r.json()),
+  create: (data) => fetch(`${API_URL}/api/reviews`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(r => {
+    if (!r.ok) return r.json().then(e => { throw new Error(e.error || 'Failed to submit review'); });
+    return r.json();
+  })
 };
 
 
@@ -156,8 +168,9 @@ function findTrip(id) {
   return all.find(t => t.id === id) || null;
 }
 
-window.findTrip = findTrip;
+// window.findTrip = findTrip; // No longer needed for SSR
 window.initTripsData = initTripsData;
 window.TripsAPI = TripsAPI;
 window.BookingsAPI = BookingsAPI;
 window.AdminAPI = AdminAPI;
+window.ReviewsAPI = ReviewsAPI;

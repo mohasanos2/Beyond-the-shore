@@ -117,7 +117,7 @@ function buildPage(t, allTrips) {
     const sIcon = getIcon(s.id);
     const sBg   = getBgGrad(s.id);
     const sPrice = s.price ? `From $${s.price}` : '';
-    return `<a class="tp-sim-card" href="${esc(s.id)}.html">
+    return `<a class="tp-sim-card" href="/trips/${esc(s.id)}">
       <div class="tp-sim-img" style="background:${esc(sBg)}">${sIcon}</div>
       <div class="tp-sim-body">
         <div class="tp-sim-name">${esc(s.name)}</div>
@@ -191,9 +191,9 @@ function buildPage(t, allTrips) {
 <meta property="og:description" content="${esc(t.description ? t.description.slice(0,155) : '')}"/>
 <meta property="og:type" content="website"/>
 ${ogImage ? `<meta property="og:image" content="${esc(ogImage)}"/>` : ''}
-<meta property="og:url" content="https://mohasanos2.github.io/Beyond-the-shore/trips/${esc(t.id)}.html"/>
+<meta property="og:url" content="https://beyond-the-shore.com/trips/${esc(t.id)}"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<link rel="canonical" href="https://mohasanos2.github.io/Beyond-the-shore/trips/${esc(t.id)}.html"/>
+<link rel="canonical" href="https://beyond-the-shore.com/trips/${esc(t.id)}"/>
 <link rel="icon" type="image/x-icon" href="../images/favicon.ico"/>
 <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>

@@ -175,6 +175,7 @@ async function renderTripPage(){
     + '<button class="tp-nav-btn" data-section="sec-itinerary" onclick="scrollToSection(\'sec-itinerary\')">Itinerary</button>'
     + '<button class="tp-nav-btn" data-section="sec-includes" onclick="scrollToSection(\'sec-includes\')">Includes</button>'
     + (t.options ? '<button class="tp-nav-btn" data-section="sec-options" onclick="scrollToSection(\'sec-options\')">Options</button>' : '')
+    + '<button class="tp-nav-btn" data-section="sec-reviews" onclick="scrollToSection(\'sec-reviews\')">Reviews</button>'
     + '<button class="tp-nav-btn" data-section="sec-similar" onclick="scrollToSection(\'sec-similar\')">More Trips</button>'
     + '</div></nav>';
 
@@ -250,7 +251,7 @@ async function renderTripPage(){
   const simHTML = '<div class="tp-section" id="sec-similar"><div class="tp-section-title">You Might Also Like</div>'
     + '<div class="tp-similar">'
     + allT.map(s =>
-        '<div class="tp-sim-card" onclick="window.location.href=\'trip.html?id=\'+esc(s.id)">'
+        '<div class="tp-sim-card" onclick="window.location.href=\'/trips/\'+esc(s.id)">'
         + '<div class="tp-sim-img" style="background:'+esc(s.bgGrad)+'">'+esc(s.icon)+'</div>'
         + '<div class="tp-sim-body"><div class="tp-sim-name">'+esc(s.name)+'</div>'
         + '<div class="tp-sim-price">'+esc(s.price)+'</div></div></div>'
@@ -263,11 +264,45 @@ async function renderTripPage(){
     + '<a class="tp-cta-book" href="javascript:void(0)" onclick="BookingRouter.goToBooking(\''+esc(t.id)+'\')">📋 Book Now</a>'
     + '</div>';
 
+  // reviews section
+  const reviewsHTML = '<div class="tp-section" id="sec-reviews">'
+    + '<div class="tp-section-title">Customer Reviews</div>'
+    + '<div id="reviews-list-container" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem">Loading reviews...</div>'
+    + '<div style="background:#f8f9fa;border-radius:16px;padding:1.5rem;border:1px solid #e8e8e8">'
+    + '<h4 style="font-family:Outfit,sans-serif;font-size:1.1rem;margin-bottom:1rem;color:#1a1a2e;text-align:left">Share Your Experience</h4>'
+    + '<form id="review-form" onsubmit="submitReview(event)" style="display:flex;flex-direction:column;gap:0.75rem">'
+    + '<div style="display:flex;gap:0.75rem;flex-wrap:wrap">'
+    + '<div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:4px;text-align:left">'
+    + '<label style="font-family:Outfit,sans-serif;font-size:0.75rem;font-weight:600;color:#666">Your Name *</label>'
+    + '<input type="text" id="rev-name" required placeholder="e.g. John Doe" style="padding:0.6rem 0.8rem;border-radius:8px;border:1px solid #ccc;font-family:Outfit,sans-serif;font-size:0.9rem"/>'
+    + '</div>'
+    + '<div style="display:flex;flex-direction:column;gap:4px;text-align:left">'
+    + '<label style="font-family:Outfit,sans-serif;font-size:0.75rem;font-weight:600;color:#666">Rating *</label>'
+    + '<select id="rev-rating" required style="padding:0.6rem 0.8rem;border-radius:8px;border:1px solid #ccc;font-family:Outfit,sans-serif;font-size:0.9rem">'
+    + '<option value="5">⭐⭐⭐⭐⭐ (5/5)</option>'
+    + '<option value="4">⭐⭐⭐⭐ (4/5)</option>'
+    + '<option value="3">⭐⭐⭐ (3/5)</option>'
+    + '<option value="2">⭐⭐ (2/5)</option>'
+    + '<option value="1">⭐ (1/5)</option>'
+    + '</select>'
+    + '</div>'
+    + '</div>'
+    + '<div style="display:flex;flex-direction:column;gap:4px;text-align:left">'
+    + '<label style="font-family:Outfit,sans-serif;font-size:0.75rem;font-weight:600;color:#666">Comment</label>'
+    + '<textarea id="rev-comment" rows="3" placeholder="Tell us about your trip..." style="padding:0.6rem 0.8rem;border-radius:8px;border:1px solid #ccc;font-family:Outfit,sans-serif;font-size:0.9rem;resize:vertical"></textarea>'
+    + '</div>'
+    + '<button type="submit" id="rev-submit-btn" style="align-self:flex-start;background:var(--teal,#0797A8);color:#fff;border:none;border-radius:50px;padding:0.6rem 1.5rem;font-family:Outfit,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Submit Review</button>'
+    + '</form>'
+    + '</div>'
+    + '</div>';
+
   container.innerHTML = heroHTML + navHTML
     + '<div class="tp-body">'
     + '<a href="index.html" style="display:inline-block;margin:1.25rem 0 0.5rem;font-family:Outfit,sans-serif;font-size:0.85rem;color:#aaa;text-decoration:none">← All Trips</a>'
-    + priceHTML + overviewHTML + itinHTML + incHTML + optHTML + simHTML
+    + priceHTML + overviewHTML + itinHTML + incHTML + optHTML + reviewsHTML + simHTML
     + '</div>' + ctaHTML;
+
+  loadTripReviews();
 
   // bg emojis
   const tripEmojis = {
@@ -289,7 +324,7 @@ async function renderTripPage(){
 
   // scroll spy
   window.addEventListener('scroll', () => {
-    const sections = ['sec-overview','sec-itinerary','sec-includes','sec-options','sec-similar'];
+    const sections = ['sec-overview','sec-itinerary','sec-includes','sec-options','sec-reviews','sec-similar'];
     let current = sections[0];
     sections.forEach(sid => {
       const el = document.getElementById(sid);
@@ -302,6 +337,77 @@ async function renderTripPage(){
     if(nav) nav.classList.toggle('scrolled', scrollY > 40);
   }, {passive:true});
 }
+
+async function loadTripReviews() {
+  const container = document.getElementById('reviews-list-container');
+  if (!container || !id) return;
+  try {
+    const reviews = await ReviewsAPI.getByTripId(id);
+    if (!reviews.length) {
+      container.innerHTML = '<div style="font-family:Outfit,sans-serif;font-size:0.88rem;color:#999;padding:1rem 0;text-align:left">No reviews yet. Be the first to review this trip!</div>';
+      return;
+    }
+    
+    container.innerHTML = reviews.map(r => {
+      const stars = '⭐'.repeat(r.rating);
+      let dateStr = '—';
+      try {
+        dateStr = new Date(r.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      } catch (e) {}
+      
+      return `<div style="background:#fff;border:1px solid #e8e8e8;border-radius:12px;padding:1rem;display:flex;flex-direction:column;gap:0.4rem;text-align:left">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-family:Outfit,sans-serif;font-size:0.9rem;font-weight:600;color:#1a1a2e">${esc(r.customer_name)}</span>
+          <span style="font-family:Outfit,sans-serif;font-size:0.75rem;color:#888">${dateStr}</span>
+        </div>
+        <div style="font-size:0.8rem;text-align:left">${stars}</div>
+        ${r.comment ? `<p style="font-family:Outfit,sans-serif;font-size:0.85rem;color:#555;line-height:1.5;margin:0;text-align:left">${esc(r.comment)}</p>` : ''}
+      </div>`;
+    }).join('');
+  } catch (err) {
+    container.innerHTML = '<div style="color:var(--coral);font-family:Outfit,sans-serif;font-size:0.85rem;text-align:left">Error loading reviews.</div>';
+  }
+}
+
+async function submitReview(event) {
+  event.preventDefault();
+  const nameInput = document.getElementById('rev-name');
+  const ratingInput = document.getElementById('rev-rating');
+  const commentInput = document.getElementById('rev-comment');
+  const submitBtn = document.getElementById('rev-submit-btn');
+  
+  if (!nameInput || !ratingInput || !commentInput || !submitBtn || !id) return;
+  
+  const name = nameInput.value.trim();
+  const rating = parseInt(ratingInput.value);
+  const comment = commentInput.value.trim();
+  
+  if (!name) return;
+  
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+  
+  try {
+    await ReviewsAPI.create({
+      trip_id: id,
+      customer_name: name,
+      rating: rating,
+      comment: comment || null
+    });
+    nameInput.value = '';
+    commentInput.value = '';
+    ratingInput.value = '5';
+    alert('✓ Thank you! Your review has been submitted.');
+    await loadTripReviews();
+  } catch (err) {
+    alert('❌ Error: ' + err.message);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit Review';
+  }
+}
+
+window.submitReview = submitReview;
 
 renderTripPage();
 </script>

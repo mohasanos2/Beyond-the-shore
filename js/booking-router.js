@@ -19,7 +19,7 @@ window.BookingRouter = (function () {
    * @param {string} tripId
    */
   function goToTrip(tripId) {
-    window.location.href = 'trip.html?id=' + encodeURIComponent(tripId);
+    window.location.href = '/trips/' + encodeURIComponent(tripId);
   }
 
   /**
