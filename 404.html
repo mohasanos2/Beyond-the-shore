@@ -19,6 +19,16 @@
 .notfound-sub{font-family:Outfit,sans-serif;font-size:0.95rem;color:var(--ink-light);max-width:380px}
 .notfound-btn{margin-top:0.5rem;padding:0.75rem 2rem;border-radius:50px;background:var(--teal);color:#fff;font-family:Outfit,sans-serif;font-weight:600;font-size:0.9rem;text-decoration:none}
 </style>
+<link rel="manifest" href="/manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker registered', reg))
+        .catch(err => console.error('Service Worker registration failed', err));
+    });
+  }
+</script>
 </head>
 <body>
 <div class="notfound-wrap">

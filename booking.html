@@ -17,6 +17,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="css/style.css"/>
 <meta name="description" content="Book your Red Sea trip — dolphins, snorkeling, Nile cruises and more. Simple 3-step booking with Beyond The Shore."/>
+<link rel="manifest" href="/manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker registered', reg))
+        .catch(err => console.error('Service Worker registration failed', err));
+    });
+  }
+</script>
 </head>
 <body>
 <div id="navbar-component"></div>

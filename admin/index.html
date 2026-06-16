@@ -93,6 +93,16 @@ textarea.field-input { min-height:80px; resize:vertical; }
 .menu-toggle { display:none; background:none; border:none; color:var(--ink-mid); font-size:1.3rem; cursor:pointer; padding:0.25rem; }
 @media(max-width:768px) { .menu-toggle { display:block; } }
 </style>
+<link rel="manifest" href="/manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker registered', reg))
+        .catch(err => console.error('Service Worker registration failed', err));
+    });
+  }
+</script>
 </head>
 <body>
 <script src="../js/config.js"></script>
