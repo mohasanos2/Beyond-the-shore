@@ -470,6 +470,13 @@ async function submitBooking(){
     const result = await BookingsAPI.create(bookingData);
     bookingId = result.id;
 
+    if (!bookingId) {
+      restoreBtn();
+      alert('Booking was not created successfully. Please try again or contact us on WhatsApp.');
+      console.error('[Booking] No booking ID returned:', result);
+      return;
+    }
+
     // حفظ الحجز في My Bookings محلياً للمستخدم
     try {
       const bookingRecord = {
