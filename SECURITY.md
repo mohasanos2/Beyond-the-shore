@@ -77,13 +77,6 @@ service firebase.storage {
 
 ---
 
-## Authentication System Notice
-
-The login/register system in `js/auth.js` stores user data in **localStorage**.
-This is a **demo/prototype system** — not suitable for production with real users.
-
-For production: migrate to Firebase Authentication or a proper backend.
-
 ---
 
 ## Admin Panel Security

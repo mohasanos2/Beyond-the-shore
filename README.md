@@ -12,8 +12,7 @@
     ├── booking.html            # 3-step booking flow
     ├── booking-dest.html       # Destination selector
     ├── trip.html               # Individual trip detail page
-    ├── login.html              # User login
-    ├── register.html           # User registration
+
     ├── 404.html                # Custom 404 page
     ├── admin/
     │   └── index.html          # Admin dashboard (PIN-protected)
@@ -30,7 +29,7 @@
     │   ├── firebase.example.js # Template for firebase.js
     │   ├── emailjs-config.js   # EmailJS config (⚠️ not committed)
     │   ├── emailjs-config.example.js # Template for emailjs-config.js
-    │   ├── auth.js             # User auth (localStorage-based)
+
     │   ├── booking-router.js   # Booking navigation module
     │   └── componentLoader.js  # Loads shared HTML components
     ├── images/
