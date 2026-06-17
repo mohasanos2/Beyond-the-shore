@@ -469,7 +469,7 @@ async function saveTrip() {
   if (!id) { showToast('Trip ID is required', 'error'); return; }
   const data = {
     id, name: document.getElementById('m-name').value.trim(),
-    category: [document.getElementById('m-dest').value],
+    category: document.getElementById('m-dest').value.trim(),
     location: document.getElementById('m-loc').value.trim(),
     price: parseFloat(document.getElementById('m-price').value.trim()) || 0,
     description: document.getElementById('m-desc').value.trim(),
@@ -670,18 +670,13 @@ const STATUS_COLORS = {
 };
 
 async function updateBookingStatus(bookingId, newStatus, source) {
-  if (source === 'api') {
+  if (source === 'api' || source === 'both' || !source) {
     try {
       await AdminAPI.updateBooking(bookingId, { status: newStatus.toLowerCase() });
     } catch(e) {
       showToast('❌ Update failed: ' + e.message, 'error');
       return;
     }
-  }
-  if (source === 'local' || source === 'both') {
-    const local = JSON.parse(localStorage.getItem('bts_bookings') || '[]');
-    const idx = local.findIndex(b => b.id === bookingId);
-    if (idx !== -1) { local[idx].status = newStatus; localStorage.setItem('bts_bookings', JSON.stringify(local)); }
   }
   // Update badge in DOM immediately
   const card = document.querySelector('[data-booking-id="' + bookingId + '"]');
