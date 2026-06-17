@@ -484,7 +484,11 @@ async function saveTrip() {
     options:      getTripOptions(),
   };
   try {
-    await AdminAPI.updateTrip(id, data);
+    if (editingId) {
+      await AdminAPI.updateTrip(id, data);
+    } else {
+      await AdminAPI.createTrip(data);
+    }
     showToast('✅ Trip saved', 'success');
   } catch(e) {
     showToast('❌ Save failed: ' + e.message, 'error');

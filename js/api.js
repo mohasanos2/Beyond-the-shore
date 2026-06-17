@@ -88,6 +88,7 @@ const AdminAPI = {
 
   getBookings: () => AdminAPI.adminFetch('/api/admin/bookings'),
   updateBooking: (id, data) => AdminAPI.adminFetch(`/api/admin/bookings/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  createTrip: (data) => AdminAPI.adminFetch('/api/admin/trips', { method: 'POST', body: JSON.stringify(data) }),
   updateTrip: (id, data) => AdminAPI.adminFetch(`/api/admin/trips/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteTrip: (id) => AdminAPI.adminFetch(`/api/admin/trips/${id}`, { method: 'DELETE' }),
   getSubscribers: () => AdminAPI.adminFetch('/api/admin/subscribers'),
