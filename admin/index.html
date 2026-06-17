@@ -418,7 +418,7 @@ function renderAdminTrips(trips) {
     <div class="trip-admin-card">
       <div class="trip-admin-card-header">
         <div class="trip-admin-card-name">${escA(t.icon)||''} ${escA(t.name)}</div>
-        <div class="trip-admin-card-badge">${escA(t.destination)||'—'}</div>
+        <div class="trip-admin-card-badge">${escA(t.tags && t.tags[0] || '—')}</div>
       </div>
       <div class="trip-admin-card-meta">
         <span class="trip-meta-pill">📍 ${escA(t.loc)||'—'}</span>
@@ -448,18 +448,18 @@ function editTrip(id) {
   document.getElementById('modal-title-text').textContent = 'Edit Trip';
   document.getElementById('m-id').value = t.id; document.getElementById('m-id').disabled = true;
   document.getElementById('m-name').value = t.name||'';
-  document.getElementById('m-dest').value = t.destination||'marsa';
+  document.getElementById('m-dest').value = t.tags && t.tags.length ? t.tags[0] : 'marsa';
   document.getElementById('m-loc').value = t.loc||'';
-  document.getElementById('m-price').value = t.price||'';
+  document.getElementById('m-price').value = t.priceNum||'';
   document.getElementById('m-badge').value = t.badge||'';
   document.getElementById('m-desc').value = t.desc||'';
   document.getElementById('m-img').value = t.imageUrl||'';
   document.getElementById('m-duration').value = t.duration||'';
   document.getElementById('m-groupsize').value = t.groupSize||'';
   document.getElementById('m-meetingpoint').value = t.meetingPoint||'';
-  document.getElementById('m-highlights').value = (t.highlights||[]).join('\n');
-  document.getElementById('m-included').value = (t.included||[]).join('\n');
-  document.getElementById('m-notincluded').value = (t.notIncluded||[]).join('\n');
+  document.getElementById('m-highlights').value = (t.tagLabels||[]).join('\n');
+  document.getElementById('m-included').value = (t.includes||[]).join('\n');
+  document.getElementById('m-notincluded').value = (t.excludes||[]).join('\n');
   setTripOptions(t.options||[]);
   document.getElementById('trip-modal').classList.add('open');
 }
@@ -469,18 +469,18 @@ async function saveTrip() {
   if (!id) { showToast('Trip ID is required', 'error'); return; }
   const data = {
     id, name: document.getElementById('m-name').value.trim(),
-    destination: document.getElementById('m-dest').value,
-    loc: document.getElementById('m-loc').value.trim(),
+    category: [document.getElementById('m-dest').value],
+    location: document.getElementById('m-loc').value.trim(),
     price: parseFloat(document.getElementById('m-price').value.trim()) || 0,
     badge: document.getElementById('m-badge').value.trim(),
-    desc: document.getElementById('m-desc').value.trim(),
+    description: document.getElementById('m-desc').value.trim(),
     imageUrl: document.getElementById('m-img').value.trim()||null,
     duration:     document.getElementById('m-duration').value.trim(),
     groupSize:    document.getElementById('m-groupsize').value.trim(),
     meetingPoint: document.getElementById('m-meetingpoint').value.trim(),
     highlights:   document.getElementById('m-highlights').value.split('\n').map(s=>s.trim()).filter(Boolean),
-    included:     document.getElementById('m-included').value.split('\n').map(s=>s.trim()).filter(Boolean),
-    notIncluded:  document.getElementById('m-notincluded').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    includes:     document.getElementById('m-included').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    excludes:     document.getElementById('m-notincluded').value.split('\n').map(s=>s.trim()).filter(Boolean),
     options:      getTripOptions(),
   };
   try {

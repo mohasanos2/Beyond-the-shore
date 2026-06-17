@@ -118,6 +118,10 @@ async function initTripsData() {
         excludes: t.excludes || [],
         itinerary: t.itinerary || [],
         options: t.options || null,
+        imageUrl: t.imageUrl || null,
+        duration: t.duration || null,
+        groupSize: t.groupSize || null,
+        meetingPoint: t.meetingPoint || null,
         details: [
           { l: 'Duration', v: t.duration || 'Full Day' },
           { l: 'Location', v: t.location },
