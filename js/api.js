@@ -35,10 +35,7 @@ const BookingsAPI = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
-  }).then(r => {
-    if (!r.ok) return r.json().catch(() => ({})).then(e => { throw new Error(e.error || e.message || `HTTP ${r.status}`); });
-    return r.json();
-  }),
+  }).then(r => r.json()),
   getById: (id) => sbFetch(`bookings?id=eq.${id}`).then(r => r[0])
 };
 
@@ -177,44 +174,3 @@ window.TripsAPI = TripsAPI;
 window.BookingsAPI = BookingsAPI;
 window.AdminAPI = AdminAPI;
 window.ReviewsAPI = ReviewsAPI;
-window.AuthAPI = {
-  register: async (email, password, name, phone) => {
-    const res = await fetch(API_URL + '/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, full_name: name, phone })
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || err.message || `HTTP ${res.status}`);
-    }
-    return res.json();
-  },
-  login: async (email, password) => {
-    const res = await fetch(API_URL + '/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || err.message || `HTTP ${res.status}`);
-    }
-    return res.json();
-  },
-  currentUser: () => {
-    try {
-      const raw = localStorage.getItem('bts_user');
-      return raw ? JSON.parse(raw) : null;
-    } catch(e) { return null; }
-  },
-  saveSession: (token, user) => {
-    localStorage.setItem('bts_token', token);
-    localStorage.setItem('bts_user', JSON.stringify(user));
-  },
-  logout: () => {
-    localStorage.removeItem('bts_token');
-    localStorage.removeItem('bts_user');
-  },
-  isAuthenticated: () => !!localStorage.getItem('bts_token')
-};
