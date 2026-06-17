@@ -241,7 +241,7 @@ textarea.field-input { min-height:80px; resize:vertical; }
     <!-- Settings Section -->
     <div class="admin-section" id="section-settings">
       <div class="page-title">⚙️ Settings</div>
-      <p style="font-size:0.75rem;color:var(--ink-light);margin-top:-1rem;margin-bottom:1.5rem">Saved to Firestore · <code>config/siteSettings</code></p>
+      <p style="font-size:0.75rem;color:var(--ink-light);margin-top:-1rem;margin-bottom:1.5rem">Saved to Backend API · <code>admin/settings</code></p>
       <div style="max-width:540px;display:flex;flex-direction:column;gap:1.1rem">
         <div class="field-group">
           <div class="field-label">💬 WhatsApp Number</div>
@@ -472,13 +472,8 @@ async function saveTrip() {
     category: [document.getElementById('m-dest').value],
     location: document.getElementById('m-loc').value.trim(),
     price: parseFloat(document.getElementById('m-price').value.trim()) || 0,
-    badge: document.getElementById('m-badge').value.trim(),
     description: document.getElementById('m-desc').value.trim(),
-    imageUrl: document.getElementById('m-img').value.trim()||null,
     duration:     document.getElementById('m-duration').value.trim(),
-    groupSize:    document.getElementById('m-groupsize').value.trim(),
-    meetingPoint: document.getElementById('m-meetingpoint').value.trim(),
-    highlights:   document.getElementById('m-highlights').value.split('\n').map(s=>s.trim()).filter(Boolean),
     includes:     document.getElementById('m-included').value.split('\n').map(s=>s.trim()).filter(Boolean),
     excludes:     document.getElementById('m-notincluded').value.split('\n').map(s=>s.trim()).filter(Boolean),
     options:      getTripOptions(),
@@ -679,7 +674,7 @@ async function updateBookingStatus(bookingId, newStatus, source) {
     try {
       await AdminAPI.updateBooking(bookingId, { status: newStatus.toLowerCase() });
     } catch(e) {
-      showToast('❌ Firestore update failed: ' + e.message, 'error');
+      showToast('❌ Update failed: ' + e.message, 'error');
       return;
     }
   }
@@ -861,9 +856,9 @@ function exportBookingsCSV() {
 }
 
 function clearBookings() {
-  if (!confirm('Clear localStorage bookings only?\n(Firestore bookings are preserved and will still appear.)')) return;
+  if (!confirm('Clear localStorage bookings only?\n(Backend bookings are preserved and will still appear.)')) return;
   localStorage.removeItem('bts_bookings');
-  showToast('Local bookings cleared — Firestore data preserved', 'success');
+  showToast('Local bookings cleared — backend data preserved', 'success');
   loadBookings();
 }
 (function() {
