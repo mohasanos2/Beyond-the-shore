@@ -673,7 +673,7 @@ const STATUS_COLORS = {
 async function updateBookingStatus(bookingId, newStatus, source) {
   if (source === 'api') {
     try {
-      await AdminAPI.updateBooking(bookingId, { status: newStatus });
+      await AdminAPI.updateBooking(bookingId, { status: newStatus.toLowerCase() });
     } catch(e) {
       showToast('❌ Firestore update failed: ' + e.message, 'error');
       return;
