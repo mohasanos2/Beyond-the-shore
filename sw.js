@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bts-cache-v1';
+const CACHE_NAME = 'bts-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -37,8 +37,21 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Strategy: Cache First, fallback to Network
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // Never cache admin pages, JS files, or API calls
+  if (
+    url.pathname.startsWith('/admin') ||
+    url.pathname.startsWith('/api') ||
+    url.pathname.endsWith('.js') ||
+    url.pathname.endsWith('.html')
+  ) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // Cache first for images and fonts only
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       return cachedResponse || fetch(event.request);
